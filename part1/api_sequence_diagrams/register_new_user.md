@@ -2,6 +2,7 @@
 
 This sequence diagram illustrates how a new user registration request is processed through the system layers in HBnB.
 
+```mermaid
 sequenceDiagram
     participant User
     participant UserAPI
@@ -20,12 +21,3 @@ sequenceDiagram
     UserService-->>HBnBFacade: user_created
     HBnBFacade-->>UserAPI: return success
     UserAPI-->>User: 201 Created + user_id
-
-
-### Explanation:
-```mermaid
-1. **User** submits registration info via API.
-2. **UserAPI** forwards the request to the **Facade** layer.
-3. **HBnBFacade** delegates it to **UserService**, which handles logic.
-4. **UserService** saves the data through **UserRepository** into the **Database**.
-5. The confirmation is sent back through the layers to the user.
