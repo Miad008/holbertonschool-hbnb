@@ -219,7 +219,6 @@ sequenceDiagram
 * If not admin: system denies access.
 
 ---
-## 📘 Additional API Calls
 
 ### ✅ API Call: Fetch List of Places
 
