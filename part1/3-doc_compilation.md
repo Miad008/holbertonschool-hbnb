@@ -219,5 +219,90 @@ sequenceDiagram
 * If not admin: system denies access.
 
 ---
+## 📘 Additional API Calls
+
+### ✅ API Call: Fetch List of Places
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant PlaceAPI
+    participant HBnBFacade
+    participant PlaceService
+    participant PlaceRepository
+    participant Database
+
+    User->>PlaceAPI: GET /places?location=city
+    PlaceAPI->>HBnBFacade: fetch_places_by_location(city)
+    HBnBFacade->>PlaceService: get_filtered_places(city)
+    PlaceService->>PlaceRepository: query_places(city)
+    PlaceRepository->>Database: SELECT * FROM places WHERE city=?
+    Database-->>PlaceRepository: return results
+    PlaceRepository-->>PlaceService: places list
+    PlaceService-->>HBnBFacade: places list
+    HBnBFacade-->>PlaceAPI: return results
+    PlaceAPI-->>User: 200 OK + places
+```
+
+**Explanation:**
+1. User requests places in a city.
+2. The API forwards the query to the facade.
+3. The business logic retrieves matching places from the DB.
+4. Response is sent back to the user.
+
+---
+
+### 📝 API Call: Submit Review
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant ReviewAPI
+    participant HBnBFacade
+    participant ReviewService
+    participant ReviewRepository
+    participant Database
+
+    User->>ReviewAPI: POST /reviews (place_id, rating, comment)
+    ReviewAPI->>HBnBFacade: submit_review(data)
+    HBnBFacade->>ReviewService: validate_and_create_review(data)
+    ReviewService->>ReviewRepository: save_review_to_db()
+    ReviewRepository->>Database: INSERT review
+    Database-->>ReviewRepository: confirmation
+    ReviewRepository-->>ReviewService: saved
+    ReviewService-->>HBnBFacade: review_created
+    HBnBFacade-->>ReviewAPI: return success
+    ReviewAPI-->>User: 201 Created + review_id
+```
+
+**Explanation:**
+1. The user submits a review via the API.
+2. The request goes through the business logic and gets saved.
+3. Confirmation is returned to the user.
+
+---
+
+### ❌ API Call: Failed Registration (Invalid Input)
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant UserAPI
+    participant HBnBFacade
+    participant UserService
+
+    User->>UserAPI: POST /register (invalid email or missing password)
+    UserAPI->>HBnBFacade: register_user(data)
+    HBnBFacade->>UserService: validate_and_create_user(data)
+    UserService-->>HBnBFacade: error ("Invalid input")
+    HBnBFacade-->>UserAPI: return error
+    UserAPI-->>User: 400 Bad Request + error message
+```
+
+**Explanation:**
+1. Invalid data is sent to register.
+2. Validation fails and error is returned.
+3. User gets a 400 Bad Request response.
+---
 
 ✅ End of Technical Document
