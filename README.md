@@ -1,0 +1,59 @@
+# HBnB - Part 1
+
+👋 Welcome! This is **Part 1** of the HBnB project.  
+The main goal is to build a **three-layer architecture** using the **Facade Design Pattern** for clean separation of concerns and better scalability.
+
+---
+
+## 🚧 Project Status
+
+This project is currently in the **early development stage**.  
+More details and code will be added as we progress.
+
+---
+
+## 🧱 Architecture Overview
+
+The project follows a classic **three-layer structure**:
+
+- **Presentation Layer:** Handles user interaction (APIs, Services)
+- **Business Logic Layer:** Core logic & models (User, Place, Review, Amenity)
+- **Persistence Layer:** Manages data storage and retrieval (DBStorage, FileStorage)
+
+Design Pattern Used: **Facade** – to simplify and centralize communication between layers.
+
+---
+
+## 📁 Current Structure
+
+```
+part1/
+├── README.md
+├── (More files coming soon...)
+```
+
+---
+
+## 👥 Team Members
+
+| Name           | GitHub Profile                                     |
+|----------------|----------------------------------------------------|
+| 🌟 Batoul       | [@Batoul-Alsaeed](https://github.com/Batoul-Alsaeed) |
+| 🚀 Miad         | [@Miad008](https://github.com/Miad008)               |
+| 🎯 Rawan        | [@rwwwn](https://github.com/rwwwn)                                  |
+
+> 📝 *Feel free to connect with us or check our contributions!*
+
+---
+
+## 🔄 To-Do (Coming Soon)
+
+- [ ] Add initial models
+- [ ] Create service layer
+- [ ] Connect to database
+- [ ] Add unit tests
+- [ ] Write documentation
+
+---
+## 📌 Note
+This is just a starter README and will be updated continuously as the project evolves. Stay tuned!
