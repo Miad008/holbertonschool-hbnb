@@ -95,7 +95,7 @@ Each class includes essential attributes like ID, creation/update time, and rela
 ### 🔁 API Interaction Flow (Sequence Diagrams)
 
 #### 1.Register New User
-See `1-register_new_user.md`
+
 ```mermaid
 sequenceDiagram
     participant User
@@ -116,6 +116,7 @@ sequenceDiagram
     HBnBFacade-->>UserAPI: return success
     UserAPI-->>User: 201 Created + user_id
 ```
+- **Purpose**: Allows a new user to create an account.
 
 ### Explanation:
 
@@ -125,7 +126,7 @@ sequenceDiagram
 
 ---
 
-#### ✅ Create New Place
+#### 2.Create New Place
 
 ```mermaid
 sequenceDiagram
@@ -147,6 +148,7 @@ sequenceDiagram
     HBnBFacade-->>PlaceAPI: return success
     PlaceAPI-->>User: 201 Created + place_id
 ```
+- **Purpose**: Allows a user to list a new property.
 
 ### Explanation:
 
@@ -156,7 +158,96 @@ sequenceDiagram
 
 ---
 
-#### ❌ Review Submission Failed (Unauthorized)
+### 3.Submit Review
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant ReviewAPI
+    participant HBnBFacade
+    participant ReviewService
+    participant ReviewRepository
+    participant Database
+
+    User->>ReviewAPI: POST /reviews (place_id, rating, comment)
+    ReviewAPI->>HBnBFacade: submit_review(data)
+    HBnBFacade->>ReviewService: validate_and_create_review(data)
+    ReviewService->>ReviewRepository: save_review_to_db()
+    ReviewRepository->>Database: INSERT review
+    Database-->>ReviewRepository: confirmation
+    ReviewRepository-->>ReviewService: saved
+    ReviewService-->>HBnBFacade: review_created
+    HBnBFacade-->>ReviewAPI: return success
+    ReviewAPI-->>User: 201 Created + review_id
+```
+- **Purpose**: Enables users to submit a review for a place.
+
+**Explanation:**
+1. The user submits a review via the API.
+2. The request goes through the business logic and gets saved.
+3. Confirmation is returned to the user.
+
+---
+
+### 4. Get List of Places  
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant PlaceAPI
+    participant HBnBFacade
+    participant PlaceService
+    participant PlaceRepository
+    participant Database
+
+    User->>PlaceAPI: GET /places?location=city
+    PlaceAPI->>HBnBFacade: fetch_places_by_location(city)
+    HBnBFacade->>PlaceService: get_filtered_places(city)
+    PlaceService->>PlaceRepository: query_places(city)
+    PlaceRepository->>Database: SELECT * FROM places WHERE city=?
+    Database-->>PlaceRepository: return results
+    PlaceRepository-->>PlaceService: places list
+    PlaceService-->>HBnBFacade: places list
+    HBnBFacade-->>PlaceAPI: return results
+    PlaceAPI-->>User: 200 OK + places
+```
+- **Purpose**: Retrieve a list of available places.
+
+**Explanation:**
+1. User requests places in a city.
+2. The API forwards the query to the facade.
+3. The business logic retrieves matching places from the DB.
+4. Response is sent back to the user.
+
+---
+
+## 🧩 Additional Sequence Diagrams (Optional but valuable)
+
+### 5. Create Amenity  
+
+```mermaid
+sequenceDiagram
+    participant Admin
+    participant AmenityAPI
+    participant HBnBFacade
+    participant AmenityService
+    participant AmenityRepository
+    participant Database
+
+    Admin->>AmenityAPI: POST /amenities (name, description)
+    AmenityAPI->>HBnBFacade: create_amenity(data)
+    HBnBFacade->>AmenityService: validate_and_create(data)
+    AmenityService->>AmenityRepository: save_to_db(data)
+    AmenityRepository->>Database: INSERT INTO amenities
+    Database-->>AmenityRepository: amenity_created
+    AmenityRepository-->>AmenityService: success
+    AmenityService-->>HBnBFacade: amenity_created
+    HBnBFacade-->>AmenityAPI: return 201 Created
+    AmenityAPI-->>Admin: Amenity Created
+```
+- **Purpose**: Admin can add a new amenity (e.g., Wi-Fi).
+
+#### 6.Review Submission Failed (Unauthorized)
 
 ```mermaid
 sequenceDiagram
@@ -175,6 +266,7 @@ sequenceDiagram
     HBnBFacade-->>ReviewAPI: return 403
     ReviewAPI-->>User: 403 Forbidden
 ```
+- **Purpose**: Shows possible outcomes (success or 403 forbidden).
 
 ### Explanation:
 
@@ -184,7 +276,32 @@ sequenceDiagram
 
 ---
 
-#### ✅ Admin Deletes Place
+### 7.Failed Registration (Invalid Input)
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant UserAPI
+    participant HBnBFacade
+    participant UserService
+
+    User->>UserAPI: POST /register (invalid email or missing password)
+    UserAPI->>HBnBFacade: register_user(data)
+    HBnBFacade->>UserService: validate_and_create_user(data)
+    UserService-->>HBnBFacade: error ("Invalid input")
+    HBnBFacade-->>UserAPI: return error
+    UserAPI-->>User: 400 Bad Request + error message
+```
+- **Purpose**: Shows what happens when user registration fails.
+
+**Explanation:**
+1. Invalid data is sent to register.
+2. Validation fails and error is returned.
+3. User gets a 400 Bad Request response.
+
+---
+
+#### 8.Admin Deletes Place
 
 ```mermaid
 sequenceDiagram
@@ -212,6 +329,7 @@ sequenceDiagram
         PlaceAPI-->>Admin: Access Denied
     end
 ```
+- **Purpose**: Admin deletes a place listing.
 
 ### Explanation:
 
@@ -220,88 +338,14 @@ sequenceDiagram
 
 ---
 
-### ✅ API Call: Fetch List of Places
-
-```mermaid
-sequenceDiagram
-    participant User
-    participant PlaceAPI
-    participant HBnBFacade
-    participant PlaceService
-    participant PlaceRepository
-    participant Database
-
-    User->>PlaceAPI: GET /places?location=city
-    PlaceAPI->>HBnBFacade: fetch_places_by_location(city)
-    HBnBFacade->>PlaceService: get_filtered_places(city)
-    PlaceService->>PlaceRepository: query_places(city)
-    PlaceRepository->>Database: SELECT * FROM places WHERE city=?
-    Database-->>PlaceRepository: return results
-    PlaceRepository-->>PlaceService: places list
-    PlaceService-->>HBnBFacade: places list
-    HBnBFacade-->>PlaceAPI: return results
-    PlaceAPI-->>User: 200 OK + places
-```
-
-**Explanation:**
-1. User requests places in a city.
-2. The API forwards the query to the facade.
-3. The business logic retrieves matching places from the DB.
-4. Response is sent back to the user.
-
 ---
 
-### 📝 API Call: Submit Review
+## ✅ Final Summary
 
-```mermaid
-sequenceDiagram
-    participant User
-    participant ReviewAPI
-    participant HBnBFacade
-    participant ReviewService
-    participant ReviewRepository
-    participant Database
+This document summarizes the technical design and architecture of the HBnB Evolution project, completed as part of our training with **Holberton School – Tuwaiq Academy**.
 
-    User->>ReviewAPI: POST /reviews (place_id, rating, comment)
-    ReviewAPI->>HBnBFacade: submit_review(data)
-    HBnBFacade->>ReviewService: validate_and_create_review(data)
-    ReviewService->>ReviewRepository: save_review_to_db()
-    ReviewRepository->>Database: INSERT review
-    Database-->>ReviewRepository: confirmation
-    ReviewRepository-->>ReviewService: saved
-    ReviewService-->>HBnBFacade: review_created
-    HBnBFacade-->>ReviewAPI: return success
-    ReviewAPI-->>User: 201 Created + review_id
-```
+It includes high-level architecture, detailed class structure, and API interaction flows, covering all core components of the system.
 
-**Explanation:**
-1. The user submits a review via the API.
-2. The request goes through the business logic and gets saved.
-3. Confirmation is returned to the user.
+> Prepared with the collaboration of team members: **Batoul Alsaeed**, **Miad Alzhrani**, and **Rawan Albaraiki**.
 
----
-
-### ❌ API Call: Failed Registration (Invalid Input)
-
-```mermaid
-sequenceDiagram
-    participant User
-    participant UserAPI
-    participant HBnBFacade
-    participant UserService
-
-    User->>UserAPI: POST /register (invalid email or missing password)
-    UserAPI->>HBnBFacade: register_user(data)
-    HBnBFacade->>UserService: validate_and_create_user(data)
-    UserService-->>HBnBFacade: error ("Invalid input")
-    HBnBFacade-->>UserAPI: return error
-    UserAPI-->>User: 400 Bad Request + error message
-```
-
-**Explanation:**
-1. Invalid data is sent to register.
-2. Validation fails and error is returned.
-3. User gets a 400 Bad Request response.
----
-
-✅ End of Technical Document
+This documentation is intended to guide the implementation phases and serve as a reference throughout the development process.
