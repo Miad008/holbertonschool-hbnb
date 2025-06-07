@@ -23,7 +23,7 @@ sequenceDiagram
     HBnBFacade-->>AmenityAPI: return 201 Created
     AmenityAPI-->>Admin: Amenity Created
 ```
-##📝 Explanation:
+## 📝 Explanation:
 
 Admin submits a POST request to create a new amenity (e.g., "Wi-Fi").
 
