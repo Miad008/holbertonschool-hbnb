@@ -94,8 +94,8 @@ Each class includes essential attributes like ID, creation/update time, and rela
 
 ### 🔁 API Interaction Flow (Sequence Diagrams)
 
-#### ✅ Register New User
-
+#### 1.Register New User
+See `1-register_new_user.md`
 ```mermaid
 sequenceDiagram
     participant User
