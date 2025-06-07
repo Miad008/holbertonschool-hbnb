@@ -5,7 +5,7 @@ The following UML class diagram represents the core business entities of the HBn
 - User can create Places and write Reviews.
 - Places can have Reviews and Amenities.
 
-![Class Diagram](./part1/class_diagram.png)
+![Class Diagram](class_diagram.png)
 
 ---
 
