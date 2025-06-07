@@ -37,7 +37,8 @@ The repository stores the data in the Database.
 
 A success response (201 Created) is returned all the way back to the admin.
 
-✅ This diagram completes the documentation of all core entities in HBnB:
+
+**✅ This diagram completes the documentation of all core entities in HBnB:**
 
 User
 
