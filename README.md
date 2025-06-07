@@ -64,7 +64,7 @@ holbertonschool-hbnb/
 ## 🎓 Academic Info
 
 Project developed under the **Full Stack Software Engineering** program at:
-> **Holberton School - Tuwaik Academy**
+> **Holberton School - Tuwaiq Academy**
 
 ---
 
