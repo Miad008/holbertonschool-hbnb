@@ -247,6 +247,8 @@ sequenceDiagram
 ```
 - **Purpose**: Admin can add a new amenity (e.g., Wi-Fi).
 
+---
+
 #### 6.Review Submission Failed (Unauthorized)
 
 ```mermaid
@@ -335,8 +337,6 @@ sequenceDiagram
 
 * If admin: place is deleted.
 * If not admin: system denies access.
-
----
 
 ---
 
