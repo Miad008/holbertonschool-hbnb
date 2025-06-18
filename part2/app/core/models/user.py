@@ -1,6 +1,15 @@
 from app.core.models.base import BaseModel
 
 class User(BaseModel):
+    """
+    Represents a user of the HBnB platform.
+
+    Attributes:
+        first_name (str): User's first name.
+        last_name (str): User's last name.
+        email (str): User's email address.
+    """
+
     def __init__(self, first_name, last_name, email, id=None, created_at=None, updated_at=None):
         super().__init__(id=id, created_at=created_at, updated_at=updated_at)
         self.first_name = first_name
