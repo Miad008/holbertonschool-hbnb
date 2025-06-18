@@ -2,6 +2,15 @@ import uuid
 from datetime import datetime
 
 class BaseModel:
+        """
+    Base class for all models in the application.
+
+    Attributes:
+        id (str): Unique identifier using UUID.
+        created_at (datetime): Timestamp of creation.
+        updated_at (datetime): Timestamp of last update.
+    """
+    
     def __init__(self, id=None, created_at=None, updated_at=None):
         self.id = id or str(uuid.uuid4())
         now = datetime.utcnow()
