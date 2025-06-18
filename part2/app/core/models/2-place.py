@@ -1,6 +1,18 @@
 from app.core.models.base import BaseModel
 
 class Place(BaseModel):
+    """
+    Represents a place listed by a user.
+
+    Attributes:
+        name (str): Name of the place.
+        description (str): Description of the place.
+        address (str): Physical address of the place.
+        owner_id (str): ID of the user who owns the place.
+        amenity_ids (list): List of Amenity IDs associated with the place.
+        review_ids (list): List of Review IDs associated with the place.
+    """
+    
     def __init__(self, name, description, address, owner_id, id=None, created_at=None, updated_at=None):
         super().__init__(id=id, created_at=created_at, updated_at=updated_at)
         self.name = name
