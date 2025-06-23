@@ -4,22 +4,19 @@ class HBnBFacade:
     def __init__(self):
         self.storage = InMemoryStorage()
 
+    # ----- User Methods -----
     def create_user(self, user_data):
-        """ينشئ مستخدم جديد ويخزّنه"""
         from app.core.models.user import User
         new_user = User(**user_data)
         return self.storage.add("users", new_user)
 
     def get_user(self, user_id):
-        """يرجع مستخدم حسب ID"""
         return self.storage.get("users", user_id)
 
     def get_all_users(self):
-        """يرجع كل المستخدمين"""
         return self.storage.get_all("users")
 
     def update_user(self, user_id, user_data):
-        """تحديث بيانات المستخدم حسب ID"""
         user = self.storage.get("users", user_id)
         if not user:
             return None
@@ -30,9 +27,9 @@ class HBnBFacade:
         return user
 
     def delete_user(self, user_id):
-        """يحذف مستخدم حسب ID"""
         return self.storage.delete("users", user_id)
 
+    # ----- Amenity Methods -----
     def create_amenity(self, amenity_data):
         from app.core.models.amenity import Amenity
         new_amenity = Amenity(**amenity_data)
@@ -51,3 +48,25 @@ class HBnBFacade:
         for key, value in updated_data.items():
             setattr(amenity, key, value)
         return amenity
+
+    # ----- Place Methods -----
+    def create_place(self, place_data):
+        from app.core.models.place import Place
+        new_place = Place(**place_data)
+        return self.storage.add("places", new_place)
+
+    def get_place(self, place_id):
+        return self.storage.get("places", place_id)
+
+    def get_all_places(self):
+        return self.storage.get_all("places")
+
+    def update_place(self, place_id, updated_data):
+        place = self.get_place(place_id)
+        if not place:
+            return None
+        for key, value in updated_data.items():
+            if hasattr(place, key):
+                setattr(place, key, value)
+        place.update_timestamp()
+        return place
