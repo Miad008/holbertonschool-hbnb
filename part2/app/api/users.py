@@ -30,29 +30,29 @@ class UserList(Resource):
         return new_user.to_dict(), 201
 
 @ns.route('/<string:user_id>')
-@ns.param('user_id', 'The User identifier')
-class UserResource(Resource):
+##@ns.param('user_id', 'The User identifier')
+class UserItem(Resource):
     @ns.marshal_with(user_model)
     def get(self, user_id):
         """استعراض مستخدم حسب ID"""
         user = facade.get_user(user_id)
-        if user:
-            return user.to_dict()
-        ns.abort(404, f"User with id {user_id} not found.")
-
-    def delete(self, user_id):
-        """حذف مستخدم"""
-        deleted = facade.delete_user(user_id)
-        if deleted:
-            return {"message": f"User {user_id} deleted."}
-        ns.abort(404, f"User with id {user_id} not found.")
-
-@ns.expect(user_model)
-@ns.marshal_with(user_model)
-def put(self, user_id):
-    """تحديث بيانات مستخدم حسب ID"""
-    user = facade.update_user(user_id, request.json)
-    if user:
+        if not user:
+            ns.abort(404, "المستخدم غير موجود")
         return user.to_dict()
-    ns.abort(404, f"User with id {user_id} not found.")
 
+    @ns.expect(user_model)
+    @ns.marshal_with(user_model)
+    def put(self, user_id):
+        """تحديث بيانات مستخدم"""
+        user_data = request.json
+        updated_user = facade.update_user(user_id, user_data)
+        if not updated_user:
+            ns.abort(404, "المستخدم غير موجود")
+        return updated_user.to_dict()
+
+    ##def delete(self, user_id):
+    #    """حذف مستخدم"""
+     #   deleted = facade.delete_user(user_id)
+      #  if deleted:
+       #     return {"message": f"User {user_id} deleted."}
+        #ns.abort(404, f"User with id {user_id} not found.")
