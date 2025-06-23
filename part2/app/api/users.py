@@ -23,11 +23,12 @@ class UserList(Resource):
 
     @ns.expect(user_model)
     @ns.response(201, 'User created successfully')
+    @ns.marshal_with(user_model)
     def post(self):
         """إنشاء مستخدم جديد (POST /users)"""
         user_data = request.json
         new_user = facade.create_user(user_data)
-       return new_user.to_dict(), 201
+        return new_user.to_dict(), 201
 
 @ns.route('/<string:user_id>')
 @ns.param('user_id', 'معرّف المستخدم')
@@ -50,9 +51,10 @@ class UserItem(Resource):
             ns.abort(404, "المستخدم غير موجود")
         return updated_user.to_dict()
 
-    ##def delete(self, user_id):
-    #    """حذف مستخدم"""
-     #   deleted = facade.delete_user(user_id)
-      #  if deleted:
-       #     return {"message": f"User {user_id} deleted."}
-        #ns.abort(404, f"User with id {user_id} not found.")
+    # @ns.response(200, "User deleted successfully")
+    # def delete(self, user_id):
+    #     """حذف مستخدم"""
+    #     deleted = facade.delete_user(user_id)
+    #     if deleted:
+    #         return {"message": f"User {user_id} deleted."}
+    #     ns.abort(404, f"User with id {user_id} not found.")
