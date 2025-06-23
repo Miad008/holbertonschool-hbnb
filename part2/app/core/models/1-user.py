@@ -22,7 +22,9 @@ class User(BaseModel):
         base_dict.update({
             "first_name": self.first_name,
             "last_name": self.last_name,
-            "email": self.email
+            "email": self.email,
+            "created_at": self.created_at.isoformat(),
+            "updated_at": self.updated_at.isoformat()
         })
         return base_dict
 
