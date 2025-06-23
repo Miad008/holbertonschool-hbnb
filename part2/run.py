@@ -19,3 +19,5 @@ api.add_namespace(amenity_ns)
 # تشغيل التطبيق
 if __name__ == "__main__":
     app.run(debug=True)
+from app.api.reviews import ns as reviews_ns
+api.add_namespace(reviews_ns)
