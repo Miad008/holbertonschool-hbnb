@@ -22,7 +22,7 @@ class UserList(Resource):
         return [u.to_dict() for u in users]
 
     @ns.expect(user_model)
-    @ns.marshal_with(user_model, code=201)
+    @ns.response(201, 'User created successfully')
     def post(self):
         """إنشاء مستخدم جديد (POST /users)"""
         user_data = request.json
