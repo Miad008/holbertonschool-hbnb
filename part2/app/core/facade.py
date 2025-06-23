@@ -19,15 +19,15 @@ class HBnBFacade:
         return self.storage.get_all("users")
 
     def update_user(self, user_id, user_data):
-    """تحديث بيانات المستخدم حسب ID"""
-    user = self.storage.get("users", user_id)
-    if not user:
-        return None
-    for key, value in user_data.items():
-        if hasattr(user, key):
-            setattr(user, key, value)
-    user.update_timestamp()
-    return user
+        """تحديث بيانات المستخدم حسب ID"""
+        user = self.storage.get("users", user_id)
+        if not user:
+            return None
+        for key, value in user_data.items():
+            if hasattr(user, key):
+                setattr(user, key, value)
+        user.update_timestamp()
+        return user
 
     def delete_user(self, user_id):
         """يحذف مستخدم حسب ID"""
