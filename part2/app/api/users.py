@@ -6,35 +6,35 @@ from app.core.facade import HBnBFacade
 ns = Namespace('users', description='User operations')
 facade = HBnBFacade()
 
-# نموذج بيانات المستخدم (للتوثيق والاختبار)
+# نموذج بيانات المستخدم (بدون كلمة المرور كما هو مطلوب)
 user_model = ns.model('User', {
-    'first_name': fields.String(required=True),
-    'last_name': fields.String(required=True),
-    'email': fields.String(required=True),
+    'first_name': fields.String(required=True, description="User's first name"),
+    'last_name': fields.String(required=True, description="User's last name"),
+    'email': fields.String(required=True, description="User's email address"),
 })
 
 @ns.route('/')
 class UserList(Resource):
     @ns.marshal_list_with(user_model)
     def get(self):
-        """استعراض كل المستخدمين"""
+        """عرض جميع المستخدمين (GET /users)"""
         users = facade.get_all_users()
         return [u.to_dict() for u in users]
 
     @ns.expect(user_model)
     @ns.marshal_with(user_model, code=201)
     def post(self):
-        """إنشاء مستخدم جديد"""
+        """إنشاء مستخدم جديد (POST /users)"""
         user_data = request.json
         new_user = facade.create_user(user_data)
         return new_user.to_dict(), 201
 
 @ns.route('/<string:user_id>')
-##@ns.param('user_id', 'The User identifier')
+@ns.param('user_id', 'معرّف المستخدم')
 class UserItem(Resource):
     @ns.marshal_with(user_model)
     def get(self, user_id):
-        """استعراض مستخدم حسب ID"""
+        """عرض مستخدم حسب المعرّف (GET /users/<id>)"""
         user = facade.get_user(user_id)
         if not user:
             ns.abort(404, "المستخدم غير موجود")
@@ -43,7 +43,7 @@ class UserItem(Resource):
     @ns.expect(user_model)
     @ns.marshal_with(user_model)
     def put(self, user_id):
-        """تحديث بيانات مستخدم"""
+        """تحديث بيانات مستخدم (PUT /users/<id>)"""
         user_data = request.json
         updated_user = facade.update_user(user_id, user_data)
         if not updated_user:
