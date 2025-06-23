@@ -22,14 +22,16 @@ class HBnBFacade:
         """يحذف مستخدم حسب ID"""
         return self.storage.delete("users", user_id)
 
-    def update_user(self, user_id, updated_data):
-    	"""يحدث بيانات مستخدم موجود"""
-	user = self.get_user(user_id)
-	if not user:
-	return None
-	for key, value in updated_data.items():
-	setattr(user, key, value)
-	return user
+    def update_user(self, user_id, user_data):
+    """تحديث بيانات المستخدم حسب ID"""
+    user = self.storage.get("users", user_id)
+    if not user:
+        return None
+    for key, value in user_data.items():
+        if hasattr(user, key):
+            setattr(user, key, value)
+    user.update_timestamp()
+    return user
 
     def create_amenity(self, amenity_data):
         from app.core.models.amenity import Amenity
