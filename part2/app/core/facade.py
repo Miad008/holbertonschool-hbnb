@@ -70,3 +70,47 @@ class HBnBFacade:
                 setattr(place, key, value)
         place.update_timestamp()
         return place
+
+    # ----- Review Methods -----
+    def create_review(self, review_data):
+        """ينشئ تقييم جديد ويربطه بمكان"""
+        from app.core.models.review import Review
+        new_review = Review(**review_data)
+        self.storage.add("reviews", new_review)
+
+        # ربط التقييم بالمكان
+        place = self.get_place(new_review.place_id)
+        if place:
+            place.review_ids.append(new_review.id)
+        return new_review
+
+    def get_review(self, review_id):
+        """يرجع تقييم حسب ID"""
+        return self.storage.get("reviews", review_id)
+
+    def get_all_reviews(self):
+        """يرجع كل التقييمات"""
+        return self.storage.get_all("reviews")
+
+    def update_review(self, review_id, updated_data):
+        """تحديث بيانات التقييم"""
+        review = self.get_review(review_id)
+        if not review:
+            return None
+        for key, value in updated_data.items():
+            if hasattr(review, key):
+                setattr(review, key, value)
+        review.update_timestamp()
+        return review
+
+    def delete_review(self, review_id):
+        """يحذف التقييم ويربطه بالمكان الصحيح"""
+        review = self.get_review(review_id)
+        if not review:
+            return None
+
+        place = self.get_place(review.place_id)
+        if place and review_id in place.review_ids:
+            place.review_ids.remove(review_id)
+
+        return self.storage.delete("reviews", review_id)
