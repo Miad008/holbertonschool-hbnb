@@ -13,7 +13,7 @@ api.add_namespace(example_ns)
 from app.api.users import ns as users_ns
 api.add_namespace(users_ns)
 
-from .amenities import ns as amenity_ns
+from app.amenities import ns as amenity_ns
 pi.add_namespace(amenity_ns)
 
 # تشغيل التطبيق
