@@ -46,4 +46,13 @@ class UserResource(Resource):
         if deleted:
             return {"message": f"User {user_id} deleted."}
         ns.abort(404, f"User with id {user_id} not found.")
-        
+
+@ns.expect(user_model)
+@ns.marshal_with(user_model)
+def put(self, user_id):
+    """تحديث بيانات مستخدم حسب ID"""
+    user = facade.update_user(user_id, request.json)
+    if user:
+        return user.to_dict()
+    ns.abort(404, f"User with id {user_id} not found.")
+
