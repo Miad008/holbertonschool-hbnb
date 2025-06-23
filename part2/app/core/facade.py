@@ -24,12 +24,12 @@ class HBnBFacade:
 
     def update_user(self, user_id, updated_data):
     	"""يحدث بيانات مستخدم موجود"""
-	    user = self.get_user(user_id)
-	    if not user:
-		    return None
-		    for key, value in updated_data.items():
-			    setattr(user, key, value)
-			    return user
+	user = self.get_user(user_id)
+	if not user:
+	return None
+	for key, value in updated_data.items():
+	setattr(user, key, value)
+	return user
 
     def create_amenity(self, amenity_data):
         from app.core.models.amenity import Amenity
