@@ -1,5 +1,4 @@
 from app.persistence.repository import InMemoryStorage
-from app.storage import storage
 
 class HBnBFacade:
     def __init__(self):
@@ -32,9 +31,15 @@ class HBnBFacade:
 
     # ----- Amenity Methods -----
     def create_amenity(self, amenity_data):
+        """Creates a new amenity"""
+        required_fields = ["name"]
+        if not all(field in amenity_data and amenity_data[field] for field in required_fields):
+            raise ValueError("Missing required amenity fields")
+
         from app.models.amenity import Amenity
         new_amenity = Amenity(**amenity_data)
-        return self.storage.add("amenities", new_amenity)
+        self.storage.save(new_amenity)
+        return new_amenity
 
     def get_amenity(self, amenity_id):
         return self.storage.get("amenities", amenity_id)
@@ -59,7 +64,7 @@ class HBnBFacade:
 
         from app.models.place import Place
         place = Place(**place_data)
-        storage.save(place)
+        self.storage.save(place)
         return place
 
     def get_place(self, place_id):
@@ -79,7 +84,6 @@ class HBnBFacade:
         return place
 
     # ----- Review Methods -----
-    # ----- Review Methods -----
     def create_review(self, review_data):
         """Creates a new review and associates it with a place"""
         required_fields = ["user_id", "place_id", "text"]
@@ -88,9 +92,8 @@ class HBnBFacade:
 
         from app.models.review import Review
         review = Review(**review_data)
-        storage.save(review)
+        self.storage.save(review)
         return review
-
 
     def get_review(self, review_id):
         """Returns a review by ID"""
