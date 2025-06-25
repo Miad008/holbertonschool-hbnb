@@ -7,9 +7,10 @@ ns = Namespace("reviews", description="Review operations")
 facade = HBnBFacade()
 
 review_model = ns.model("Review", {
-    "text": fields.String(required=True),
-    "user_id": fields.String(required=True),
-    "place_id": fields.String(required=True)
+    'text': fields.String(required=True, description='Text of the review'),
+    'user_id': fields.String(required=True, description='User ID'),
+    'place_id': fields.String(required=True, description='Place ID')
+    'rating': fields.Integer(required=False, min=1, max=5, description="Rating from 1 to 5")
 })
 
 @ns.route("/")
