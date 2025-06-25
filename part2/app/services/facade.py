@@ -31,15 +31,11 @@ class HBnBFacade:
 
     # ----- Amenity Methods -----
     def create_amenity(self, amenity_data):
-        """Creates a new amenity"""
-        required_fields = ["name"]
-        if not all(field in amenity_data and amenity_data[field] for field in required_fields):
-            raise ValueError("Missing required amenity fields")
-
         from app.models.amenity import Amenity
+        if not all(field in amenity_data and amenity_data[field] for field in ["name"]):
+            raise ValueError("Missing required amenity fields")
         new_amenity = Amenity(**amenity_data)
-        self.storage.add("amenities", new_amenity)  # Use `add()` instead of `save()`
-        return new_amenity
+        return self.storage.add("amenities", new_amenity)
 
     def get_amenity(self, amenity_id):
         return self.storage.get("amenities", amenity_id)
@@ -57,15 +53,13 @@ class HBnBFacade:
 
     # ----- Place Methods -----
     def create_place(self, place_data):
-        """Creates a new place and associates it with a user"""
         required_fields = ["name", "address", "owner_id", "price"]
         if not all(field in place_data and place_data[field] for field in required_fields):
             raise ValueError("Missing required place fields")
-
+        
         from app.models.place import Place
         place = Place(**place_data)
-        self.storage.add("places", place)  # Use `add()` instead of `save()`
-        return place
+        return self.storage.add("places", place)
 
     def get_place(self, place_id):
         return self.storage.get("places", place_id)
@@ -85,26 +79,21 @@ class HBnBFacade:
 
     # ----- Review Methods -----
     def create_review(self, review_data):
-        """Creates a new review and associates it with a place"""
         required_fields = ["user_id", "place_id", "text"]
         if not all(field in review_data and review_data[field] for field in required_fields):
             raise ValueError("Missing required review fields")
 
         from app.models.review import Review
         review = Review(**review_data)
-        self.storage.add("reviews", review)  # Use `add()` instead of `save()`
-        return review
+        return self.storage.add("reviews", review)
 
     def get_review(self, review_id):
-        """Returns a review by ID"""
         return self.storage.get("reviews", review_id)
 
     def get_all_reviews(self):
-        """Returns all reviews"""
         return self.storage.get_all("reviews")
 
     def update_review(self, review_id, updated_data):
-        """Updates the review data"""
         review = self.get_review(review_id)
         if not review:
             return None
@@ -115,7 +104,6 @@ class HBnBFacade:
         return review
 
     def delete_review(self, review_id):
-        """Deletes the review and links it with the correct place"""
         review = self.get_review(review_id)
         if not review:
             return None
