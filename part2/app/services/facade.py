@@ -38,7 +38,7 @@ class HBnBFacade:
 
         from app.models.amenity import Amenity
         new_amenity = Amenity(**amenity_data)
-        self.storage.save(new_amenity)
+        self.storage.add("amenities", new_amenity)  # Use `add()` instead of `save()`
         return new_amenity
 
     def get_amenity(self, amenity_id):
@@ -64,7 +64,7 @@ class HBnBFacade:
 
         from app.models.place import Place
         place = Place(**place_data)
-        self.storage.save(place)
+        self.storage.add("places", place)  # Use `add()` instead of `save()`
         return place
 
     def get_place(self, place_id):
@@ -92,7 +92,7 @@ class HBnBFacade:
 
         from app.models.review import Review
         review = Review(**review_data)
-        self.storage.save(review)
+        self.storage.add("reviews", review)  # Use `add()` instead of `save()`
         return review
 
     def get_review(self, review_id):
