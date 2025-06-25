@@ -8,7 +8,7 @@ facade = HBnBFacade()
 
 # نموذج بيانات المكان
 place_model = ns.model('Place', {
-    'title': fields.String(required=True),
+    'name': fields.String(required=True, description="Name of the place"),
     'description': fields.String(required=True),
     'address': fields.String(required=True),
     'owner_id': fields.String(required=True),

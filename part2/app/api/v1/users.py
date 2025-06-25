@@ -2,12 +2,11 @@ from flask import request
 from flask_restx import Namespace, Resource, fields
 from app.services.facade import HBnBFacade  
 
-
-# إنشاء واجهة API للمستخدمين
+# Create API namespace for user operations
 ns = Namespace('users', description='User operations')
 facade = HBnBFacade()
 
-# نموذج بيانات المستخدم (بدون كلمة المرور كما هو مطلوب)
+# User model schema (without password as required)
 user_model = ns.model('User', {
     'first_name': fields.String(required=True, description="User's first name"),
     'last_name': fields.String(required=True, description="User's last name"),
@@ -18,44 +17,48 @@ user_model = ns.model('User', {
 class UserList(Resource):
     @ns.marshal_list_with(user_model)
     def get(self):
-        """عرض جميع المستخدمين (GET /users)"""
+        """Get all users (GET /users)"""
         users = facade.get_all_users()
         return [u.to_dict() for u in users]
 
     @ns.expect(user_model)
     @ns.response(201, 'User created successfully')
+    @ns.response(400, 'Invalid input data')
     @ns.marshal_with(user_model)
     def post(self):
-        """إنشاء مستخدم جديد (POST /users)"""
+        """Create a new user (POST /users)"""
         user_data = request.json
-        new_user = facade.create_user(user_data)
-        return new_user.to_dict(), 201
+        try:
+            new_user = facade.create_user(user_data)
+            return new_user.to_dict(), 201
+        except ValueError as e:
+            ns.abort(400, str(e))
 
 @ns.route('/<string:user_id>')
-@ns.param('user_id', 'معرّف المستخدم')
+@ns.param('user_id', 'User ID')
 class UserItem(Resource):
     @ns.marshal_with(user_model)
     def get(self, user_id):
-        """عرض مستخدم حسب المعرّف (GET /users/<id>)"""
+        """Get a user by ID (GET /users/<id>)"""
         user = facade.get_user(user_id)
         if not user:
-            ns.abort(404, "المستخدم غير موجود")
+            ns.abort(404, "User not found")
         return user.to_dict()
 
     @ns.expect(user_model)
     @ns.marshal_with(user_model)
     def put(self, user_id):
-        """تحديث بيانات مستخدم (PUT /users/<id>)"""
+        """Update user data (PUT /users/<id>)"""
         user_data = request.json
         updated_user = facade.update_user(user_id, user_data)
         if not updated_user:
-            ns.abort(404, "المستخدم غير موجود")
+            ns.abort(404, "User not found")
         return updated_user.to_dict()
 
-    # @ns.response(200, "User deleted successfully")
-    # def delete(self, user_id):
-    #     """حذف مستخدم"""
-    #     deleted = facade.delete_user(user_id)
-    #     if deleted:
-    #         return {"message": f"User {user_id} deleted."}
-    #     ns.abort(404, f"User with id {user_id} not found.")
+    @ns.response(200, "User deleted successfully")
+    def delete(self, user_id):
+        """Delete user (DELETE /users/<id>)"""
+        deleted = facade.delete_user(user_id)
+        if deleted:
+            return {"message": f"User {user_id} deleted."}
+        ns.abort(404, f"User with id {user_id} not found.")

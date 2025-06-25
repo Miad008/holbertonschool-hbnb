@@ -1,4 +1,4 @@
-from app.persistence.repository import InMemoryRepository
+from app.persistence.repository import InMemoryStorage
 
 class HBnBFacade:
     def __init__(self):
@@ -73,27 +73,27 @@ class HBnBFacade:
 
     # ----- Review Methods -----
     def create_review(self, review_data):
-        """ينشئ تقييم جديد ويربطه بمكان"""
+        """Creates a new review and associates it with a place"""
         from app.models.review import Review
         new_review = Review(**review_data)
         self.storage.add("reviews", new_review)
 
-        # ربط التقييم بالمكان
+        # Link the review with the place
         place = self.get_place(new_review.place_id)
         if place:
             place.review_ids.append(new_review.id)
         return new_review
 
     def get_review(self, review_id):
-        """يرجع تقييم حسب ID"""
+        """Returns a review by ID"""
         return self.storage.get("reviews", review_id)
 
     def get_all_reviews(self):
-        """يرجع كل التقييمات"""
+        """Returns all reviews"""
         return self.storage.get_all("reviews")
 
     def update_review(self, review_id, updated_data):
-        """تحديث بيانات التقييم"""
+        """Updates the review data"""
         review = self.get_review(review_id)
         if not review:
             return None
@@ -104,7 +104,7 @@ class HBnBFacade:
         return review
 
     def delete_review(self, review_id):
-        """يحذف التقييم ويربطه بالمكان الصحيح"""
+        """Deletes the review and links it with the correct place"""
         review = self.get_review(review_id)
         if not review:
             return None
