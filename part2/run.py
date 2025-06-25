@@ -5,7 +5,9 @@ from config import config
 # إنشاء التطبيق
 app = Flask(__name__)
 app.config.from_object(config['default'])
-api = Api(app)
+api = Api(app, version='1.0', title='HBnB API',
+    description='API for the HBnB project', doc='/')
+
 
 # استيراد ping
 from app.api.example import ns as example_ns
