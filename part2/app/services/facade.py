@@ -6,7 +6,7 @@ class HBnBFacade:
 
     # ----- User Methods -----
     def create_user(self, user_data):
-        from app.core.models.user import User
+        from app.models.user import User  
         new_user = User(**user_data)
         return self.storage.add("users", new_user)
 
@@ -31,7 +31,7 @@ class HBnBFacade:
 
     # ----- Amenity Methods -----
     def create_amenity(self, amenity_data):
-        from app.core.models.amenity import Amenity
+        from app.models.amenity import Amenity
         new_amenity = Amenity(**amenity_data)
         return self.storage.add("amenities", new_amenity)
 
@@ -51,7 +51,7 @@ class HBnBFacade:
 
     # ----- Place Methods -----
     def create_place(self, place_data):
-        from app.core.models.place import Place
+        ffrom app.models.place import Place 
         new_place = Place(**place_data)
         return self.storage.add("places", new_place)
 
@@ -74,7 +74,7 @@ class HBnBFacade:
     # ----- Review Methods -----
     def create_review(self, review_data):
         """ينشئ تقييم جديد ويربطه بمكان"""
-        from app.core.models.review import Review
+        from app.models.review import Review
         new_review = Review(**review_data)
         self.storage.add("reviews", new_review)
 
