@@ -29,6 +29,9 @@ api.add_namespace(places_ns, path='/api/v1/places')
 from app.api.v1.reviews import ns as reviews_ns
 api.add_namespace(reviews_ns, path='/api/v1/reviews')
 
+__all__ = ['app']
+
 # تشغيل التطبيق
 if __name__ == "__main__":
     app.run(debug=True)
+   
