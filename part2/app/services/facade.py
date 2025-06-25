@@ -77,16 +77,18 @@ class HBnBFacade:
         return place
 
     # ----- Review Methods -----
+    # ----- Review Methods -----
     def create_review(self, review_data):
-        """Creates a new review and associates it with a place"""
-           required_fields = ["user_id", "place_id", "text"]
-    if not all(field in data and data[field] for field in required_fields):
+    """Creates a new review and associates it with a place"""
+    required_fields = ["user_id", "place_id", "text"]
+    if not all(field in review_data and review_data[field] for field in required_fields):
         raise ValueError("Missing required review fields")
 
     from app.models.review import Review
-    review = Review(**data)
+    review = Review(**review_data)
     storage.save(review)
     return review
+
 
     def get_review(self, review_id):
         """Returns a review by ID"""
