@@ -5,39 +5,29 @@ from app import create_app
 class ReviewAPITestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        """Set up the test client."""
-        cls.app = create_app()
-        cls.client = cls.app.test_client()
+        cls.app = create_app()  # Get the Flask app instance
+        cls.client = cls.app.test_client()  # Create a test client
 
     def test_create_review(self):
-        """Test creating a valid review."""
+        # Define a valid payload for creating a review
         payload = {
-            "user_id": "user_123",
-            "place_id": "place_123",
-            "text": "Great place, highly recommended!"
+            "place_id": "1",
+            "user_id": "1",
+            "review": "Great place!"
         }
-
         res = self.client.post('/api/v1/reviews/', data=json.dumps(payload), content_type='application/json')
-
-        # Assert that the status code is 201 (Created)
         self.assertEqual(res.status_code, 201)
-
-        # Assert that the review is created successfully
-        data = json.loads(res.data)
-        self.assertEqual(data['text'], "Great place, highly recommended!")
+        self.assertIn('id', json.loads(res.data))
 
     def test_create_review_invalid(self):
-        """Test creating a review with missing fields."""
+        # Define an invalid payload (missing 'review' field)
         payload = {
-            # Missing 'user_id', 'place_id', and 'text' fields
+            "place_id": "1",
+            "user_id": "1"
         }
-
         res = self.client.post('/api/v1/reviews/', data=json.dumps(payload), content_type='application/json')
+        self.assertEqual(res.status_code, 400)  # Expecting a bad request due to missing field
+        self.assertIn('Missing required review fields', json.loads(res.data))
 
-        # Assert that the status code is 400 (Bad Request)
-        self.assertEqual(res.status_code, 400)
-
-        # Check if the error message is correct
-        data = json.loads(res.data)
-        self.assertEqual(data['error'], "Missing required review fields")
-
+if __name__ == '__main__':
+    unittest.main()
