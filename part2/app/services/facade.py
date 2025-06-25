@@ -51,7 +51,7 @@ class HBnBFacade:
 
     # ----- Place Methods -----
     def create_place(self, place_data):
-        ffrom app.models.place import Place 
+        from app.models.place import Place 
         new_place = Place(**place_data)
         return self.storage.add("places", new_place)
 
