@@ -15,7 +15,7 @@ class UserAPITestCase(unittest.TestCase):
             "last_name": "Alzahrani",
             "email": "miad@example.com"
         }
-        res = self.client.post('/api/v1/users', data=json.dumps(payload), content_type='application/json')
+        res = self.client.post('/api/v1/users/', data=json.dumps(payload), content_type='application/json')
         self.assertEqual(res.status_code, 201)
         self.assertEqual(res.get_json()["first_name"], "Miad")
 
@@ -26,7 +26,7 @@ class UserAPITestCase(unittest.TestCase):
             "last_name": "Alsaeed",
             "email": "batoul@example.com"
         }
-        res = self.client.post('/api/v1/users', data=json.dumps(payload), content_type='application/json')
+        res = self.client.post('/api/v1/users/', data=json.dumps(payload), content_type='application/json')
         self.assertEqual(res.status_code, 201)
         self.assertEqual(res.get_json()["first_name"], "Batoul")
 
@@ -37,13 +37,13 @@ class UserAPITestCase(unittest.TestCase):
             "last_name": "Albaraiki",
             "email": "rawa@example.com"
         }
-        res = self.client.post('/api/v1/users', data=json.dumps(payload), content_type='application/json')
+        res = self.client.post('/api/v1/users/', data=json.dumps(payload), content_type='application/json')
         self.assertEqual(res.status_code, 201)
         self.assertEqual(res.get_json()["first_name"], "Rawa")
 
     def test_get_users(self):
         """جلب جميع المستخدمين"""
-        res = self.client.get('/api/v1/users')
+        res = self.client.get('/api/v1/users/')
         self.assertEqual(res.status_code, 200)
         self.assertIsInstance(res.get_json(), list)
 

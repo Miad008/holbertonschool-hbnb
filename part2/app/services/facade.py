@@ -51,9 +51,14 @@ class HBnBFacade:
 
     # ----- Place Methods -----
     def create_place(self, place_data):
-        from app.models.place import Place 
-        new_place = Place(**place_data)
-        return self.storage.add("places", new_place)
+         required_fields = ["name", "address", "owner_id", "price"]
+    if not all(field in data and data[field] for field in required_fields):
+        raise ValueError("Missing required place fields")
+
+    from app.models.place import Place
+    place = Place(**data)
+    storage.save(place)
+    return place
 
     def get_place(self, place_id):
         return self.storage.get("places", place_id)
@@ -74,15 +79,14 @@ class HBnBFacade:
     # ----- Review Methods -----
     def create_review(self, review_data):
         """Creates a new review and associates it with a place"""
-        from app.models.review import Review
-        new_review = Review(**review_data)
-        self.storage.add("reviews", new_review)
+           required_fields = ["user_id", "place_id", "text"]
+    if not all(field in data and data[field] for field in required_fields):
+        raise ValueError("Missing required review fields")
 
-        # Link the review with the place
-        place = self.get_place(new_review.place_id)
-        if place:
-            place.review_ids.append(new_review.id)
-        return new_review
+    from app.models.review import Review
+    review = Review(**data)
+    storage.save(review)
+    return review
 
     def get_review(self, review_id):
         """Returns a review by ID"""

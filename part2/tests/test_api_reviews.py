@@ -13,12 +13,12 @@ class ReviewAPITestCase(unittest.TestCase):
             "user_id": "user-123",
             "place_id": "place-456"
         }
-        res = self.client.post('/api/v1/reviews', data=json.dumps(payload), content_type='application/json')
+        res = self.client.post('/api/v1/reviews/', data=json.dumps(payload), content_type='application/json')
         self.assertEqual(res.status_code, 201)
         self.assertEqual(res.get_json()["text"], "Great place!")
 
     def test_get_reviews(self):
-        res = self.client.get('/api/v1/reviews')
+        res = self.client.get('/api/v1/reviews/')
         self.assertEqual(res.status_code, 200)
         self.assertIsInstance(res.get_json(), list)
 
@@ -28,7 +28,7 @@ class ReviewAPITestCase(unittest.TestCase):
             "user_id": "nonexistent-user",
             "place_id": "nonexistent-place"
         }
-        res = self.client.post('/api/v1/reviews', data=json.dumps(payload), content_type='application/json')
+        res = self.client.post('/api/v1/reviews/', data=json.dumps(payload), content_type='application/json')
         self.assertEqual(res.status_code, 400)
 
 if __name__ == '__main__':

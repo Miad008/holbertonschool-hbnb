@@ -19,12 +19,12 @@ class PlaceAPITestCase(unittest.TestCase):
             "amenity_ids": [],
             "review_ids": []
         }
-        res = self.client.post('/api/v1/places', data=json.dumps(payload), content_type='application/json')
+        res = self.client.post('/api/v1/places/', data=json.dumps(payload), content_type='application/json')
         self.assertEqual(res.status_code, 201)
         self.assertEqual(res.get_json()["name"], "Cozy Apartment")
 
     def test_get_places(self):
-        res = self.client.get('/api/v1/places')
+        res = self.client.get('/api/v1/places/')
         self.assertEqual(res.status_code, 200)
         self.assertIsInstance(res.get_json(), list)
 
@@ -40,7 +40,7 @@ class PlaceAPITestCase(unittest.TestCase):
             "amenity_ids": [],
             "review_ids": []
         }
-        res = self.client.post('/api/v1/places', data=json.dumps(payload), content_type='application/json')
+        res = self.client.post('/api/v1/places/', data=json.dumps(payload), content_type='application/json')
         self.assertEqual(res.status_code, 400)
 
 if __name__ == '__main__':
