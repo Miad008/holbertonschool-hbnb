@@ -1,0 +1,9 @@
+certifi==2025.4.26
+charset-normalizer==3.4.2
+dbus-python==1.2.18
+distro==1.7.0
+idna==3.10
+PyGObject==3.42.1
+requests==2.32.4
+ssh-import-id==5.11
+urllib3==2.4.0
