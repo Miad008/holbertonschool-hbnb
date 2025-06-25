@@ -1,4 +1,4 @@
-from app.repository.in_memory_storage import InMemoryStorage
+from app.persistence.repository import InMemoryRepository
 
 class HBnBFacade:
     def __init__(self):
