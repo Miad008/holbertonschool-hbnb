@@ -1,7 +1,7 @@
 
 from flask_restx import Namespace, Resource, fields
 from flask import request
-from app.core.facade import HBnBFacade
+from app.services.facade import HBnBFacade
 
 ns = Namespace("reviews", description="Review operations")
 facade = HBnBFacade()
@@ -9,7 +9,7 @@ facade = HBnBFacade()
 review_model = ns.model("Review", {
     'text': fields.String(required=True, description='Text of the review'),
     'user_id': fields.String(required=True, description='User ID'),
-    'place_id': fields.String(required=True, description='Place ID')
+    'place_id': fields.String(required=True, description='Place ID'),
     'rating': fields.Integer(required=False, min=1, max=5, description="Rating from 1 to 5")
 })
 
