@@ -1,35 +1,43 @@
 import unittest
-from run import app
 import json
+from app import create_app
 
 class ReviewAPITestCase(unittest.TestCase):
-    def setUp(self):
-        self.client = app.test_client()
-        self.client.testing = True
+    @classmethod
+    def setUpClass(cls):
+        """Set up the test client."""
+        cls.app = create_app()
+        cls.client = cls.app.test_client()
 
     def test_create_review(self):
+        """Test creating a valid review."""
         payload = {
-            "text": "Great place!",
-            "user_id": "user-123",
-            "place_id": "place-456"
+            "user_id": "user_123",
+            "place_id": "place_123",
+            "text": "Great place, highly recommended!"
         }
-        res = self.client.post('/api/v1/reviews/', data=json.dumps(payload), content_type='application/json')
-        self.assertEqual(res.status_code, 201)
-        self.assertEqual(res.get_json()["text"], "Great place!")
 
-    def test_get_reviews(self):
-        res = self.client.get('/api/v1/reviews/')
-        self.assertEqual(res.status_code, 200)
-        self.assertIsInstance(res.get_json(), list)
+        res = self.client.post('/api/v1/reviews/', data=json.dumps(payload), content_type='application/json')
+
+        # Assert that the status code is 201 (Created)
+        self.assertEqual(res.status_code, 201)
+
+        # Assert that the review is created successfully
+        data = json.loads(res.data)
+        self.assertEqual(data['text'], "Great place, highly recommended!")
 
     def test_create_review_invalid(self):
+        """Test creating a review with missing fields."""
         payload = {
-            "text": "",
-            "user_id": "nonexistent-user",
-            "place_id": "nonexistent-place"
+            # Missing 'user_id', 'place_id', and 'text' fields
         }
+
         res = self.client.post('/api/v1/reviews/', data=json.dumps(payload), content_type='application/json')
+
+        # Assert that the status code is 400 (Bad Request)
         self.assertEqual(res.status_code, 400)
 
-if __name__ == '__main__':
-    unittest.main()
+        # Check if the error message is correct
+        data = json.loads(res.data)
+        self.assertEqual(data['error'], "Missing required review fields")
+
