@@ -1,6 +1,7 @@
 from flask import request
 from flask_restx import Namespace, Resource, fields
-from app.core.facade import HBnBFacade
+from app.services.facade import HBnBFacade  
+
 
 # إنشاء واجهة API للمستخدمين
 ns = Namespace('users', description='User operations')
