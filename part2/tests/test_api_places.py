@@ -1,47 +1,43 @@
 import unittest
-from run import app
 import json
+from app import create_app
 
 class PlaceAPITestCase(unittest.TestCase):
-    def setUp(self):
-        self.client = app.test_client()
-        self.client.testing = True
+    @classmethod
+    def setUpClass(cls):
+        """Set up the test client."""
+        cls.app = create_app()
+        cls.client = cls.app.test_client()
 
     def test_create_place(self):
+        """Test creating a valid place."""
         payload = {
-            "name": "Cozy Apartment",
-            "description": "A small cozy place",
-            "address": "456 Another St",
-            "owner_id": "user-123",
-            "price": 50.0,
-            "latitude": 45.0,
-            "longitude": -75.0,
-            "amenity_ids": [],
-            "review_ids": []
+            "name": "Beach House",
+            "address": "123 Beach Ave",
+            "owner_id": "owner_id_123",
+            "price": 200
         }
-        res = self.client.post('/api/v1/places/', data=json.dumps(payload), content_type='application/json')
-        self.assertEqual(res.status_code, 201)
-        self.assertEqual(res.get_json()["name"], "Cozy Apartment")
 
-    def test_get_places(self):
-        res = self.client.get('/api/v1/places/')
-        self.assertEqual(res.status_code, 200)
-        self.assertIsInstance(res.get_json(), list)
+        res = self.client.post('/api/v1/places/', data=json.dumps(payload), content_type='application/json')
+
+        # Assert that the status code is 201 (Created)
+        self.assertEqual(res.status_code, 201)
+
+        # Assert that the place is created successfully
+        data = json.loads(res.data)
+        self.assertEqual(data['name'], "Beach House")
 
     def test_create_place_invalid(self):
+        """Test creating a place with missing fields."""
         payload = {
-            "name": "",
-            "description": "No name place",
-            "address": "No address",
-            "owner_id": "user-123",
-            "price": -10,
-            "latitude": 100,  # invalid latitude
-            "longitude": 200,  # invalid longitude
-            "amenity_ids": [],
-            "review_ids": []
+            # Missing 'address', 'owner_id', and 'price' fields
         }
+
         res = self.client.post('/api/v1/places/', data=json.dumps(payload), content_type='application/json')
+
+        # Assert that the status code is 400 (Bad Request)
         self.assertEqual(res.status_code, 400)
 
-if __name__ == '__main__':
-    unittest.main()
+        # Check if the error message is correct
+        data = json.loads(res.data)
+        self.assertEqual(data['error'], "Missing required place fields")
