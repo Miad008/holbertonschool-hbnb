@@ -1,24 +1,31 @@
 from flask import Flask
-from .config import Config  # You can add your config file if needed
+from flask_restx import Api
+from .config import Config
+  
+# Import Namespaces
+from app.api.v1.users import ns as users_ns
+from app.api.v1.amenities import ns as amenities_ns
+from app.api.v1.places import ns as places_ns
+from app.api.v1.reviews import ns as reviews_ns
 
 def create_app():
-    # Create the Flask application instance
     app = Flask(__name__)
-    
-    # Load the configuration (optional, if you have a config file)
-    app.config.from_object(Config)  # Adjust this based on your config setup
-    
-    # Register blueprints for the API routes
-    from .api.v1.amenities import api as amenities_api
-    from .api.v1.places import api as places_api
-    from .api.v1.reviews import api as reviews_api
-    
-    app.register_blueprint(amenities_api, url_prefix='/api/v1/amenities')
-    app.register_blueprint(places_api, url_prefix='/api/v1/places')
-    app.register_blueprint(reviews_api, url_prefix='/api/v1/reviews')
-    
-    # Add any other app setup or extension registration (e.g., database, JWT)
-    
+    app.config.from_object(Config)
+  
+    # Setting up the Swagger interface
+    api = Api(
+        app,
+        version='1.0',
+        title='HBnB API',
+        description='RESTful API for the HBnB platform',
+        doc='/api/v1/'
+    )
+
+    # Namespaces registration
+    api.add_namespace(users_ns, path='/api/v1/users')
+    api.add_namespace(amenities_ns, path='/api/v1/amenities')
+    api.add_namespace(places_ns, path='/api/v1/places')
+    api.add_namespace(reviews_ns, path='/api/v1/reviews')
+        
     return app
-
-
+    
