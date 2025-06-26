@@ -1,37 +1,6 @@
-from flask import Flask
-from flask_restx import Api
-from config import config
+from app import create_app
 
-# إنشاء التطبيق
-app = Flask(__name__)
-app.config.from_object(config['default'])
-api = Api(app, version='1.0', title='HBnB API',
-    description='API for the HBnB project', doc='/')
+app = create_app()
 
-
-# استيراد ping
-from app.api.example import ns as example_ns
-api.add_namespace(example_ns)
-
-# استيراد users
-from app.api.v1.users import ns as users_ns
-api.add_namespace(users_ns, path='/api/v1/users')
-
-# استيراد amenities
-from app.api.v1.amenities import ns as amenity_ns
-api.add_namespace(amenity_ns, path='/api/v1/amenities')
-
-# استيراد places
-from app.api.v1.places import ns as places_ns
-api.add_namespace(places_ns, path='/api/v1/places')
-
-# استيراد reviews
-from app.api.v1.reviews import ns as reviews_ns
-api.add_namespace(reviews_ns, path='/api/v1/reviews')
-
-__all__ = ['app']
-
-# تشغيل التطبيق
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.run(debug=True)
-   
