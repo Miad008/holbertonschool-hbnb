@@ -48,13 +48,15 @@ class HBnBFacade:
     def get_all_amenities(self):
         return self.amenity_repo.get_all()
 
-    def update_amenity(self, amenity_id, data):
-        amenity = self.get_amenity(amenity_id)
-        if not amenity:
-            return None
-        for key, value in data.items():
+def update_amenity(self, amenity_id, data):
+    amenity = self.get_amenity(amenity_id)
+    if not amenity:
+        return None
+    for key, value in data.items():
+        if hasattr(amenity, key):
             setattr(amenity, key, value)
-        return amenity
+    amenity.update_timestamp()
+    return amenity
 
     # --- PLACE ---
     def create_place(self, place_data):
