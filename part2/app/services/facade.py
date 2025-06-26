@@ -58,7 +58,6 @@ class HBnBFacade:
 
     # --- PLACE ---
     def create_place(self, place_data):
-        # Validation
         price = place_data.get("price")
         lat = place_data.get("latitude")
         lng = place_data.get("longitude")
@@ -70,13 +69,11 @@ class HBnBFacade:
         if lng is None or not (-180 <= lng <= 180):
             raise ValueError("Longitude must be between -180 and 180.")
 
-        # Owner validation
         owner_id = place_data.get("owner_id")
         owner = self.user_repo.get(owner_id)
         if not owner:
             raise ValueError("Owner not found.")
 
-        # Amenities (if provided)
         amenity_objs = []
         for amenity_id in place_data.get("amenities", []):
             amenity = self.amenity_repo.get(amenity_id)
@@ -106,19 +103,20 @@ class HBnBFacade:
         if not place:
             return None
 
-        # Validation
         if "price" in data and data["price"] < 0:
             raise ValueError("Price must be non-negative.")
         if "latitude" in data and not (-90 <= data["latitude"] <= 90):
             raise ValueError("Latitude out of bounds.")
         if "longitude" in data and not (-180 <= data["longitude"] <= 180):
             raise ValueError("Longitude out of bounds.")
+
         if "owner_id" in data:
             owner = self.user_repo.get(data["owner_id"])
             if not owner:
                 raise ValueError("Owner not found.")
             place.owner = owner
             data.pop("owner_id")
+
         if "amenities" in data:
             amenities = []
             for amenity_id in data["amenities"]:
@@ -148,6 +146,11 @@ class HBnBFacade:
 
         review = Review(**review_data)
         self.review_repo.add(review)
+
+        # Link review ID to place (optional feature)
+        if hasattr(place, "review_ids"):
+            place.review_ids.append(review.id)
+
         return review
 
     def get_review(self, review_id):
@@ -165,3 +168,14 @@ class HBnBFacade:
                 setattr(review, key, value)
         review.update_timestamp()
         return review
+
+    def delete_review(self, review_id):
+        review = self.get_review(review_id)
+        if not review:
+            return None
+
+        place = self.get_place(review.place_id)
+        if place and hasattr(place, "review_ids") and review_id in place.review_ids:
+            place.review_ids.remove(review_id)
+
+        return self.review_repo.delete(review_id)
