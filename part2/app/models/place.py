@@ -89,16 +89,27 @@ class Place(BaseModel):
         """Add an amenity to the place."""
         self.amenities.append(amenity)
 
-    def to_dict(self):
-        base_dict = super().to_dict()
-        base_dict.update({
-            "title": self.title,
-            "description": self.description,
-            "price": self.price,
-            "latitude": self.latitude,
-            "longitude": self.longitude,
-            "owner_id": self.owner.id if self.owner else None,
-            "amenities": [a.id if hasattr(a, "id") else a for a in self.amenities],
-            "reviews": [r.id if hasattr(r, "id") else r for r in self.reviews]
-        })
-        return base_dict
+def to_dict(self):
+    base_dict = super().to_dict()
+    base_dict.update({
+        "title": self.title,
+        "description": self.description,
+        "price": self.price,
+        "latitude": self.latitude,
+        "longitude": self.longitude,
+        "owner": {
+            "id": self.owner.id,
+            "first_name": getattr(self.owner, "first_name", ""),
+            "last_name": getattr(self.owner, "last_name", ""),
+            "email": getattr(self.owner, "email", "")
+        } if self.owner else None,
+        "amenities": [
+            {
+                "id": a.id,
+                "name": getattr(a, "name", "")
+            } if hasattr(a, "id") else {"id": a} for a in self.amenities
+        ],
+        "reviews": [r.id if hasattr(r, "id") else r for r in self.reviews]
+    })
+    return base_dict
+
