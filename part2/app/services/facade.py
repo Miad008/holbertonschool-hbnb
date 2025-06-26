@@ -48,15 +48,15 @@ class HBnBFacade:
     def get_all_amenities(self):
         return self.amenity_repo.get_all()
 
-def update_amenity(self, amenity_id, data):
-    amenity = self.get_amenity(amenity_id)
-    if not amenity:
-        return None
-    for key, value in data.items():
-        if hasattr(amenity, key):
-            setattr(amenity, key, value)
-    amenity.update_timestamp()
-    return amenity
+    def update_amenity(self, amenity_id, data):
+        amenity = self.get_amenity(amenity_id)
+        if not amenity:
+            return None
+        for key, value in data.items():
+            if hasattr(amenity, key):
+                setattr(amenity, key, value)
+        amenity.update_timestamp()
+        return amenity
 
     # --- PLACE ---
     def create_place(self, place_data):
@@ -112,21 +112,21 @@ def update_amenity(self, amenity_id, data):
         if "longitude" in data and not (-180 <= data["longitude"] <= 180):
             raise ValueError("Longitude out of bounds.")
 
-        if "owner_id" in data:
-            owner = self.user_repo.get(data["owner_id"])
+        owner_id = data.pop("owner_id", None)
+        if owner_id is not None:
+            owner = self.user_repo.get(owner_id)
             if not owner:
                 raise ValueError("Owner not found.")
             place.owner = owner
-            data.pop("owner_id")
 
-        if "amenities" in data:
+        amenity_ids = data.pop("amenities", None)
+        if amenity_ids is not None:
             amenities = []
-            for amenity_id in data["amenities"]:
+            for amenity_id in amenity_ids:
                 amenity = self.amenity_repo.get(amenity_id)
                 if amenity:
                     amenities.append(amenity)
             place.amenities = amenities
-            data.pop("amenities")
 
         for key, value in data.items():
             if hasattr(place, key):
@@ -149,7 +149,6 @@ def update_amenity(self, amenity_id, data):
         review = Review(**review_data)
         self.review_repo.add(review)
 
-        # Link review ID to place (optional feature)
         if hasattr(place, "review_ids"):
             place.review_ids.append(review.id)
 
