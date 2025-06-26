@@ -21,6 +21,16 @@ class BaseModel:
         """Update the timestamp of the last modification."""
         self.updated_at = datetime.utcnow()
 
+    def update(self, data):
+        """
+        Update object attributes from a dictionary and refresh the updated_at timestamp.
+        Ignores attributes that do not already exist on the object.
+        """
+        for key, value in data.items():
+            if hasattr(self, key):
+                setattr(self, key, value)
+        self.update_timestamp()
+
     def to_dict(self):
         """Return a dictionary representation of the instance (JSON-ready)."""
         return {
