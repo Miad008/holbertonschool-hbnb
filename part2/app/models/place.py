@@ -26,7 +26,6 @@ class Place(BaseModel):
         self.owner = owner
         self.amenities = amenities if amenities else []
         self.reviews = reviews if reviews else []
-        self.review_ids = []
 
     # --- Properties with validation ---
 
