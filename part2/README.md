@@ -70,64 +70,53 @@ class Config:
 class DevelopmentConfig(Config):
     DEBUG = True
 ```
-You can switch environments by modifying app.config.from_object(Config) in __init__.py.
+
+You can apply the config in __init__.py using:
+```bash
+app.config.from_object(Config)
+```
+To run the app locally:
+```bash
+python3 part2/run.py
+```
 
 ------
-## 📌 Endpoints
-
-**Users**
-POST /api/v1/users/
-GET /api/v1/users/
-
-**Amenities**
-POST /api/v1/amenities/
-GET /api/v1/amenities/
-
-**Places**
-POST /api/v1/places/
-GET /api/v1/places/
-
-**Reviews**
-POST /api/v1/reviews/
-GET /api/v1/reviews/
-GET /api/v1/places/<place_id>/reviews/
-PUT /api/v1/reviews/<review_id>
-DELETE /api/v1/reviews/<review_id>
-
----
 
 ## 🚀 API Endpoints
 
 Implemented using **Flask-RESTx**, fully documented via **Swagger UI**:
 
-| Method | Endpoint             | Description       |
-| ------ | -------------------- | ----------------- |
-| POST   | `/api/v1/users/`     | Create a user     |
-| GET    | `/api/v1/users/`     | Get all users     |
-| POST   | `/api/v1/places/`    | Create a place    |
-| GET    | `/api/v1/places/`    | Get all places    |
-| POST   | `/api/v1/reviews/`   | Create a review   |
-| GET    | `/api/v1/reviews/`   | Get all reviews   |
-| POST   | `/api/v1/amenities/` | Create an amenity |
-| GET    | `/api/v1/amenities/` | Get all amenities |
+| Method | Endpoint                          | Description                        |
+|--------|-----------------------------------|------------------------------------|
+| POST   | `/api/v1/users/`                  | Create a new user                  |
+| GET    | `/api/v1/users/`                  | Retrieve all users                 |
+| POST   | `/api/v1/places/`                 | Create a new place                 |
+| GET    | `/api/v1/places/`                 | Retrieve all places                |
+| POST   | `/api/v1/reviews/`                | Create a new review                |
+| GET    | `/api/v1/reviews/`                | Retrieve all reviews               |
+| POST   | `/api/v1/amenities/`              | Create a new amenity               |
+| GET    | `/api/v1/amenities/`              | Retrieve all amenities             |
+| GET    | `/api/v1/places/<place_id>/reviews/` | Retrieve reviews for a place   |
+| PUT    | `/api/v1/reviews/<review_id>`     | Update a review by ID              |
+| DELETE | `/api/v1/reviews/<review_id>`     | Delete a review by ID              |
+
 
 📄 Swagger Docs: `http://127.0.0.1:5000/api/v1/`
 
----
+------
+
 ## ✅ Validation Logic
-All models include attribute-level validation:
 
-**User**: Valid first name, last name, and email format
-
-**Place**: Valid price (≥ 0), title, latitude, and longitude range
-
-**Review**: Valid text and rating (1–5)
-
-**Amenity**: Name is required and max 50 characters
+All models perform internal data validation to ensure data integrity:
+**User**: Requires first_name, last_name, and valid email.
+**Place**: Requires title, positive price, and valid latitude/longitude
+**Review**: Requires text, valid user_id, and place_id
+**Amenity**: Requires non-empty name (max 50 characters)
 
 ---
 
-## 🧪 Testing & Validation
+## 🧪 Testing
+
 
 * Manual testing via `curl` and Swagger
 * Automated testing using `unittest`
@@ -164,16 +153,14 @@ OK
 
 ---
 
-## 📎 Notes
-Data is stored using an in-memory repository (InMemoryRepository)
-
-API docs available at: http://localhost:5000/api/v1/ via Swagger UI
-
-The project is modular and scalable with proper separation of concerns
+## 📌 Notes
+* This project uses an in-memory repository (no database).
+* All APIs are accessible and testable via Swagger.
+* The app is structured following clean architecture and separation of concerns.
 
 ---
 
-## 🛠️ Technologies
+## 🛠️ Tech Stack
 
 * Python 3
 * Flask
@@ -193,7 +180,7 @@ The project is modular and scalable with proper separation of concerns
 
 ## 👥 Team & Attribution
 
-This project was developed by a team of students from **Tuwaiq Academy - Holberton Program**:
+Developed as part of the *Holberton* program at **Tuwaiq Academy**:
 
 * **Batoul Alsaeed**
 * **Miad Alzhrani**
@@ -201,4 +188,4 @@ This project was developed by a team of students from **Tuwaiq Academy - Holbert
 
 We worked collaboratively on the system design, development, testing, and documentation.
 
----
+--
