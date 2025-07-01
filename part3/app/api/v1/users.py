@@ -1,5 +1,6 @@
 from flask import request
 from flask_restx import Namespace, Resource, fields
+from flask_jwt_extended import jwt_required, get_jwt_identity  # Task 3 - JWT
 from app.services.facade import HBnBFacade
 
 # Create namespace and facade instance
@@ -66,14 +67,26 @@ class UserItem(Resource):
             ns.abort(404, "User not found")
         return user.to_dict()
 
+    @jwt_required()  # Task 3 - Require authentication
     @ns.expect(user_input_model, validate=True)  # Task 1
     @ns.response(200, 'User updated successfully')
+    @ns.response(403, 'Unauthorized action')  # Task 3
+    @ns.response(400, 'Invalid input data')   # Task 3
     @ns.response(404, 'User not found')
-    @ns.response(400, 'Invalid input data')
     @ns.marshal_with(user_output_model)  # Task 1
     def put(self, user_id):
         """Update a user's information"""
+        # Task 3 - Authenticated User Access:
+        # - Only the user can update their own profile
+        # - Cannot modify email or password through this endpoint
+        current_user_id = get_jwt_identity()
+        if user_id != current_user_id:
+            ns.abort(403, "Unauthorized action")
+
         user_data = request.json
+        if "email" in user_data or "password" in user_data:
+            ns.abort(400, "You cannot modify email or password")
+
         updated_user = facade.update_user(user_id, user_data)
         if not updated_user:
             ns.abort(404, "User not found")
