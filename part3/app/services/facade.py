@@ -4,6 +4,7 @@ from app.models.place import Place
 from app.models.review import Review
 from app.models.amenity import Amenity
 
+
 class HBnBFacade:
     def __init__(self):
         self.user_repo = InMemoryRepository()
@@ -11,41 +12,82 @@ class HBnBFacade:
         self.review_repo = InMemoryRepository()
         self.amenity_repo = InMemoryRepository()
 
-# --- USER ---
-def create_user(self, user_data):
-    user = User(
-        first_name=user_data["first_name"],
-        last_name=user_data["last_name"],
-        email=user_data["email"],
-        is_admin=user_data.get("is_admin", False)
-    )
-    if "password" in user_data:
-        user.hash_password(user_data["password"])  # Task 1: Password hashing
-    self.user_repo.add(user)
-    return user
+    # --- USER ---
+    def create_user(self, user_data):
+        user = User(
+            first_name=user_data["first_name"],
+            last_name=user_data["last_name"],
+            email=user_data["email"],
+            is_admin=user_data.get("is_admin", False)
+        )
+        if "password" in user_data:
+            user.hash_password(user_data["password"])  # Task 1
+        self.user_repo.add(user)
+        return user
 
-def get_user(self, user_id):
-    return self.user_repo.get(user_id)
+    def get_user(self, user_id):
+        return self.user_repo.get(user_id)
 
-def get_user_by_email(self, email):  # Task 2: Used in login
-    for user in self.user_repo.get_all():
-        if user.email == email:
-            return user
-    return None
-
-def get_all_users(self):
-    return self.user_repo.get_all()
-
-def update_user(self, user_id, user_data):
-    user = self.get_user(user_id)
-    if not user:
+    def get_user_by_email(self, email):
+        for user in self.user_repo.get_all():
+            if user.email == email:
+                return user
         return None
-    for key, value in user_data.items():
-        if hasattr(user, key):
-            setattr(user, key, value)
-    user.update_timestamp()
-    return user
 
+    def get_all_users(self):
+        return self.user_repo.get_all()
+
+    def update_user(self, user_id, user_data):
+        user = self.get_user(user_id)
+        if not user:
+            return None
+        for key, value in user_data.items():
+            if hasattr(user, key):
+                setattr(user, key, value)
+        user.update_timestamp()
+        return user
+
+    def create_user_admin(self, user_data):
+        """Admin-only: create any user, including admins"""
+        email = user_data.get("email")
+        if not email:
+            raise ValueError("Email is required")
+
+        if self.get_user_by_email(email):
+            raise ValueError("Email already exists")
+
+        user = User(
+            first_name=user_data.get("first_name", ""),
+            last_name=user_data.get("last_name", ""),
+            email=email,
+            is_admin=user_data.get("is_admin", False)
+        )
+
+        if "password" in user_data:
+            user.hash_password(user_data["password"])
+
+        self.user_repo.add(user)
+        return user
+
+    def update_user_admin(self, user_id, user_data):
+        """Admin-only: update any user fields including email and password"""
+        user = self.get_user(user_id)
+        if not user:
+            return None
+
+        for key, value in user_data.items():
+            if key == "email":
+                existing = self.get_user_by_email(value)
+                if existing and existing.id != user.id:
+                    raise ValueError("Email already in use")
+                user.email = value
+            elif key == "password":
+                user.hash_password(value)
+            elif hasattr(user, key):
+                setattr(user, key, value)
+
+        user.update_timestamp()
+        return user
 
     # --- AMENITY ---
     def create_amenity(self, amenity_data):
@@ -194,3 +236,4 @@ def update_user(self, user_id, user_data):
             place.review_ids.remove(review_id)
 
         return self.review_repo.delete(review_id)
+
