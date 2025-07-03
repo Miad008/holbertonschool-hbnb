@@ -1,14 +1,12 @@
 from datetime import datetime
-from app import db
 
-class BaseModel(db.Model):
-    """Base class for all models"""
-    __abstract__ = True
+class BaseModel:
+    """Base class for all models (used as a mixin)"""
 
-    id = db.Column(db.Integer, primary_key=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    def save(self):
+        from app import db  # Local import avoids circular issue
+        db.session.add(self)
+        db.session.commit()
 
     def to_dict(self):
-        """Convert model to dictionary"""
         return {column.name: getattr(self, column.name) for column in self.__table__.columns}
