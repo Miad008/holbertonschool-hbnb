@@ -3,7 +3,7 @@ from app import bcrypt
 from datetime import datetime
 from app import db
 
-class User(BaseModel):
+class User(BaseModel, db.Model):
     """
     Represents a user of the HBnB platform.
 
