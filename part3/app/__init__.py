@@ -33,5 +33,8 @@ def create_app(config_class=DevelopmentConfig):
     api.add_namespace(places_ns, path="/places")             # optional
     api.add_namespace(reviews_ns, path="/reviews")           # optional
 
+    print("Routes loaded:")
+    print([str(rule) for rule in app.url_map.iter_rules()])
+ 
     return app
 
