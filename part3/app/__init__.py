@@ -1,11 +1,19 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
+from flask_jwt_extended import JWTManager
+from flask_restx import Api
+
 from app.config import DevelopmentConfig
+from app.api.v1.auth import ns as auth_ns
+from app.api.v1.users import ns as users_ns, ns_users as admin_users_ns
+from app.api.v1.places import ns as places_ns
+from app.api.v1.reviews import ns as reviews_ns
 
 # Initialize extensions
 db = SQLAlchemy()
 bcrypt = Bcrypt()
+jwt = JWTManager()
 
 def create_app(config_class=DevelopmentConfig):
     """Application factory with config and extensions"""
@@ -15,5 +23,16 @@ def create_app(config_class=DevelopmentConfig):
     # Initialize extensions
     db.init_app(app)
     bcrypt.init_app(app)
+    jwt.init_app(app)
+
+    # Create API
+    api = Api(app, version="1.0", title="HBnB API", prefix="/api/v1")
+
+    # Register namespaces
+    api.add_namespace(auth_ns, path="/auth")
+    api.add_namespace(users_ns, path="/users")
+    api.add_namespace(admin_users_ns, path="/admin/users")
+    api.add_namespace(places_ns, path="/places")
+    api.add_namespace(reviews_ns, path="/reviews")
 
     return app
