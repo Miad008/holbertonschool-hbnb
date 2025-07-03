@@ -1,5 +1,4 @@
 from app.models.basemodel import BaseModel
-from app import bcrypt
 from datetime import datetime
 from app import db
 
@@ -79,10 +78,12 @@ class User(BaseModel, db.Model):
         self.__password = value
 
     def hash_password(self, password):
+         from app import bcrypt
         """Hashes and sets the user's password"""
         self.password = bcrypt.generate_password_hash(password).decode('utf-8')
 
     def verify_password(self, password):
+         from app import bcrypt
         """Verifies if a password matches the stored hash"""
         return bcrypt.check_password_hash(self.password, password)
 
