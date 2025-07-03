@@ -1,6 +1,7 @@
 from app.models.basemodel import BaseModel
 from app import bcrypt
 from datetime import datetime
+from app import db
 
 class User(BaseModel):
     """
