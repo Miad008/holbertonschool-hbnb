@@ -19,17 +19,19 @@ def create_app(config_class=DevelopmentConfig):
     app = Flask(__name__)
     app.config.from_object(config_class)
 
+    # Initialize extensions
     db.init_app(app)
     bcrypt.init_app(app)
     jwt.init_app(app)
 
+    # Register all API namespaces
     api = Api(app, version="1.0", title="HBnB API", prefix="/api/v1")
 
-    # ✅ Register all namespaces here
-    api.add_namespace(auth_ns, path="/auth")           # /api/v1/auth/...
-    api.add_namespace(users_ns, path="/users")         # /api/v1/users/...
-    api.add_namespace(admin_users_ns, path="/admin/users")  # /api/v1/admin/users/...
-    api.add_namespace(places_ns, path="/places")
-    api.add_namespace(reviews_ns, path="/reviews")
+    api.add_namespace(auth_ns, path="/auth")                 # /api/v1/auth
+    api.add_namespace(users_ns, path="/users")               # /api/v1/users
+    api.add_namespace(admin_users_ns, path="/admin/users")   # /api/v1/admin/users
+    api.add_namespace(places_ns, path="/places")             # optional
+    api.add_namespace(reviews_ns, path="/reviews")           # optional
 
     return app
+
