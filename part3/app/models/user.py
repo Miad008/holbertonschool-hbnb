@@ -1,4 +1,4 @@
-from app.models.BaseModel import BaseModel
+from app.models.basemodel import BaseModel
 from app import bcrypt
 from datetime import datetime
 
