@@ -1,4 +1,4 @@
-from app.persistence.repository import InMemoryRepository
+from app.persistence.repository import SQLAlchemyRepository
 from app.models.user import User
 from app.models.place import Place
 from app.models.review import Review
@@ -7,10 +7,10 @@ from app.models.amenity import Amenity
 
 class HBnBFacade:
     def __init__(self):
-        self.user_repo = InMemoryRepository()
-        self.place_repo = InMemoryRepository()
-        self.review_repo = InMemoryRepository()
-        self.amenity_repo = InMemoryRepository()
+        self.user_repo = SQLAlchemyRepository(User)
+        self.place_repo = SQLAlchemyRepository(Place)
+        self.review_repo = SQLAlchemyRepository(Review)
+        self.amenity_repo = SQLAlchemyRepository(Amenity)
 
     # --- USER ---
     def create_user(self, user_data):
@@ -21,7 +21,7 @@ class HBnBFacade:
             is_admin=user_data.get("is_admin", False)
         )
         if "password" in user_data:
-            user.hash_password(user_data["password"])  # Task 1
+            user.hash_password(user_data["password"])
         self.user_repo.add(user)
         return user
 
@@ -29,26 +29,15 @@ class HBnBFacade:
         return self.user_repo.get(user_id)
 
     def get_user_by_email(self, email):
-        for user in self.user_repo.get_all():
-            if user.email == email:
-                return user
-        return None
+        return self.user_repo.get_by_attribute("email", email)
 
     def get_all_users(self):
         return self.user_repo.get_all()
 
     def update_user(self, user_id, user_data):
-        user = self.get_user(user_id)
-        if not user:
-            return None
-        for key, value in user_data.items():
-            if hasattr(user, key):
-                setattr(user, key, value)
-        user.update_timestamp()
-        return user
+        return self.user_repo.update(user_id, user_data)
 
     def create_user_admin(self, user_data):
-        """Admin-only: create any user, including admins"""
         email = user_data.get("email")
         if not email:
             raise ValueError("Email is required")
@@ -70,7 +59,6 @@ class HBnBFacade:
         return user
 
     def update_user_admin(self, user_id, user_data):
-        """Admin-only: update any user fields including email and password"""
         user = self.get_user(user_id)
         if not user:
             return None
@@ -105,14 +93,7 @@ class HBnBFacade:
         return self.amenity_repo.get_all()
 
     def update_amenity(self, amenity_id, data):
-        amenity = self.get_amenity(amenity_id)
-        if not amenity:
-            return None
-        for key, value in data.items():
-            if hasattr(amenity, key):
-                setattr(amenity, key, value)
-        amenity.update_timestamp()
-        return amenity
+        return self.amenity_repo.update(amenity_id, data)
 
     # --- PLACE ---
     def create_place(self, place_data):
@@ -127,16 +108,15 @@ class HBnBFacade:
         if lng is None or not (-180 <= lng <= 180):
             raise ValueError("Longitude must be between -180 and 180.")
 
-        owner_id = place_data.get("owner_id")
-        owner = self.user_repo.get(owner_id)
+        owner = self.user_repo.get(place_data.get("owner_id"))
         if not owner:
             raise ValueError("Owner not found.")
 
-        amenity_objs = []
+        amenities = []
         for amenity_id in place_data.get("amenities", []):
             amenity = self.amenity_repo.get(amenity_id)
             if amenity:
-                amenity_objs.append(amenity)
+                amenities.append(amenity)
 
         place = Place(
             title=place_data["title"],
@@ -145,7 +125,7 @@ class HBnBFacade:
             latitude=lat,
             longitude=lng,
             owner=owner,
-            amenities=amenity_objs
+            amenities=amenities
         )
         self.place_repo.add(place)
         return place
@@ -204,10 +184,6 @@ class HBnBFacade:
 
         review = Review(**review_data)
         self.review_repo.add(review)
-
-        if hasattr(place, "review_ids"):
-            place.review_ids.append(review.id)
-
         return review
 
     def get_review(self, review_id):
@@ -217,23 +193,8 @@ class HBnBFacade:
         return self.review_repo.get_all()
 
     def update_review(self, review_id, data):
-        review = self.get_review(review_id)
-        if not review:
-            return None
-        for key, value in data.items():
-            if hasattr(review, key):
-                setattr(review, key, value)
-        review.update_timestamp()
-        return review
+        return self.review_repo.update(review_id, data)
 
     def delete_review(self, review_id):
-        review = self.get_review(review_id)
-        if not review:
-            return None
-
-        place = self.get_place(review.place_id)
-        if place and hasattr(place, "review_ids") and review_id in place.review_ids:
-            place.review_ids.remove(review_id)
-
         return self.review_repo.delete(review_id)
 
