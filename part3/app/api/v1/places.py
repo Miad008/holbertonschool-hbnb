@@ -96,28 +96,31 @@ class PlaceResource(Resource):
     @api.response(404, 'Place not found')
     @jwt_required()  # JWT protection added (Task 3)
     def put(self, place_id):
-        """Update a place's information (owner only)"""
-        current_user = get_jwt_identity()
-        place = facade.get_place(place_id)
-        if not place:
-            api.abort(404, 'Place not found')
+    """Update a place's information (owner or admin only)"""
+    current_user = get_jwt_identity()
+    claims = get_jwt()
 
-        if str(place.owner.id) != current_user["id"]:
-            api.abort(403, 'Unauthorized action')  # Ownership check (Task 3)
+    place = facade.get_place(place_id)
+    if not place:
+        api.abort(404, 'Place not found')
 
-        data = request.json
-        amenity_objs = []
-        for amenity_id in data.get('amenities', []):
-            amenity = facade.get_amenity(amenity_id)
-            if not amenity:
-                api.abort(400, f'Amenity with ID {amenity_id} not found')
-            amenity_objs.append(amenity)
+    is_admin = claims.get("is_admin", False)
+    if not is_admin and str(place.owner.id) != current_user["id"]:
+        api.abort(403, 'Unauthorized action')
 
-        data['owner'] = place.owner
-        data['amenities'] = amenity_objs
+    data = request.json
+    amenity_objs = []
+    for amenity_id in data.get('amenities', []):
+        amenity = facade.get_amenity(amenity_id)
+        if not amenity:
+            api.abort(400, f'Amenity with ID {amenity_id} not found')
+        amenity_objs.append(amenity)
 
-        try:
-            updated_place = facade.update_place(place_id, data)
-            return updated_place.to_dict()
-        except ValueError as e:
-            api.abort(400, str(e))
+    data['owner'] = place.owner
+    data['amenities'] = amenity_objs
+
+    try:
+        updated_place = facade.update_place(place_id, data)
+        return updated_place.to_dict()
+    except ValueError as e:
+        api.abort(400, str(e))
