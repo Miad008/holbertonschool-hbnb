@@ -9,6 +9,7 @@ from app.api.v1.auth import auth as auth_ns
 from app.api.v1.users import ns as users_ns, ns_users as admin_users_ns
 from app.api.v1.places import ns as places_ns
 from app.api.v1.reviews import ns as reviews_ns
+from app.api.v1.amenities import ns as amenities_ns
 
 # Initialize extensions
 db = SQLAlchemy()
@@ -32,6 +33,7 @@ def create_app(config_class=DevelopmentConfig):
     api.add_namespace(admin_users_ns, path="/admin/users")   # /api/v1/admin/users
     api.add_namespace(places_ns, path="/places")             # optional
     api.add_namespace(reviews_ns, path="/reviews")           # optional
+    api.add_namespace(amenities_ns, path="/amenities")
 
     print("Routes loaded:")
     print([str(rule) for rule in app.url_map.iter_rules()])
