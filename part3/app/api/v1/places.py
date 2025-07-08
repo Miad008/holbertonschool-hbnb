@@ -1,6 +1,6 @@
 from flask import request
 from flask_restx import Namespace, Resource, fields
-from flask_jwt_extended import jwt_required, get_jwt_identity  # Added for JWT protection (Task 3)
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from app.services.facade import HBnBFacade
 
 api = Namespace('places', description='Place operations')
@@ -45,10 +45,10 @@ class PlaceList(Resource):
     @api.expect(place_model)
     @api.marshal_with(place_response_model, code=201)
     @api.response(400, 'Invalid input data')
-    @jwt_required()  # JWT protection added (Task 3)
+    @jwt_required()
     def post(self):
         """Register a new place (requires authentication)"""
-        current_user = get_jwt_identity()  # Extract user from token
+        current_user = get_jwt_identity()
         user = facade.get_user(current_user["id"])
         if not user:
             api.abort(400, 'Authenticated user not found')
@@ -94,33 +94,33 @@ class PlaceResource(Resource):
     @api.response(400, 'Invalid input data')
     @api.response(403, 'Unauthorized action')
     @api.response(404, 'Place not found')
-    @jwt_required()  # JWT protection added (Task 3)
+    @jwt_required()
     def put(self, place_id):
-    """Update a place's information (owner or admin only)"""
-    current_user = get_jwt_identity()
-    claims = get_jwt()
+        """Update a place's information (owner or admin only)"""
+        current_user = get_jwt_identity()
+        claims = get_jwt()
 
-    place = facade.get_place(place_id)
-    if not place:
-        api.abort(404, 'Place not found')
+        place = facade.get_place(place_id)
+        if not place:
+            api.abort(404, 'Place not found')
 
-    is_admin = claims.get("is_admin", False)
-    if not is_admin and str(place.owner.id) != current_user["id"]:
-        api.abort(403, 'Unauthorized action')
+        is_admin = claims.get("is_admin", False)
+        if not is_admin and str(place.owner.id) != current_user["id"]:
+            api.abort(403, 'Unauthorized action')
 
-    data = request.json
-    amenity_objs = []
-    for amenity_id in data.get('amenities', []):
-        amenity = facade.get_amenity(amenity_id)
-        if not amenity:
-            api.abort(400, f'Amenity with ID {amenity_id} not found')
-        amenity_objs.append(amenity)
+        data = request.json
+        amenity_objs = []
+        for amenity_id in data.get('amenities', []):
+            amenity = facade.get_amenity(amenity_id)
+            if not amenity:
+                api.abort(400, f'Amenity with ID {amenity_id} not found')
+            amenity_objs.append(amenity)
 
-    data['owner'] = place.owner
-    data['amenities'] = amenity_objs
+        data['owner'] = place.owner
+        data['amenities'] = amenity_objs
 
-    try:
-        updated_place = facade.update_place(place_id, data)
-        return updated_place.to_dict()
-    except ValueError as e:
-        api.abort(400, str(e))
+        try:
+            updated_place = facade.update_place(place_id, data)
+            return updated_place.to_dict()
+        except ValueError as e:
+            api.abort(400, str(e))
