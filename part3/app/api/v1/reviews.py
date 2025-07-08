@@ -1,6 +1,6 @@
 from flask_restx import Namespace, Resource, fields
 from flask import request
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from app.services.facade import HBnBFacade
 
 ns = Namespace("reviews", description="Review operations")
@@ -24,7 +24,6 @@ class ReviewList(Resource):
         return [r.to_dict() for r in reviews], 200
 
     @jwt_required()
-    # [TASK 3] Secured this endpoint with JWT. Only authenticated users can post reviews.
     @ns.expect(review_model, validate=True)
     @ns.marshal_with(review_model, code=201)
     @ns.response(400, "Invalid input")
@@ -34,9 +33,10 @@ class ReviewList(Resource):
         """Create a new review"""
         data = request.json
         current_user_id = get_jwt_identity()
+        claims = get_jwt()
+        is_admin = claims.get("is_admin", False)
 
-        # [TASK 3] Ensure that users can only create reviews as themselves
-        if data["user_id"] != current_user_id:
+        if not is_admin and data["user_id"] != current_user_id:
             ns.abort(403, "You can only create reviews as yourself")
 
         user = facade.get_user(data.get("user_id"))
@@ -47,15 +47,14 @@ class ReviewList(Resource):
         if not place:
             ns.abort(404, "Place not found")
 
-        # [TASK 3] Prevent users from reviewing their own place
-        if place.owner.id == current_user_id:
+        if not is_admin and place.owner.id == current_user_id:
             ns.abort(400, "You cannot review your own place")
 
-        # [TASK 3] Prevent users from reviewing the same place more than once
-        existing_reviews = facade.get_reviews_by_place(data["place_id"])
-        for r in existing_reviews:
-            if r.user_id == current_user_id:
-                ns.abort(400, "You have already reviewed this place")
+        if not is_admin:
+            existing_reviews = facade.get_reviews_by_place(data["place_id"])
+            for r in existing_reviews:
+                if r.user_id == current_user_id:
+                    ns.abort(400, "You have already reviewed this place")
 
         try:
             review = facade.create_review(data)
@@ -75,21 +74,22 @@ class ReviewResource(Resource):
         return review.to_dict(), 200
 
     @jwt_required()
-    # [TASK 3] Secured review update. Only review owner can update.
     @ns.expect(review_model, validate=True)
     @ns.marshal_with(review_model)
     @ns.response(404, "Review not found")
     @ns.response(400, "Invalid input")
     @ns.response(403, "Unauthorized action")
     def put(self, review_id):
-        """Update a review"""
+        """Update a review (owner or admin only)"""
         current_user_id = get_jwt_identity()
+        claims = get_jwt()
+        is_admin = claims.get("is_admin", False)
+
         review = facade.get_review(review_id)
         if not review:
             ns.abort(404, "Review not found")
 
-        # [TASK 3] Ownership check before update
-        if review.user_id != current_user_id:
+        if not is_admin and review.user_id != current_user_id:
             ns.abort(403, "Unauthorized action")
 
         data = request.json
@@ -97,19 +97,20 @@ class ReviewResource(Resource):
         return updated.to_dict(), 200
 
     @jwt_required()
-    # [TASK 3] Secured review deletion. Only review owner can delete.
     @ns.response(200, "Review deleted successfully")
     @ns.response(404, "Review not found")
     @ns.response(403, "Unauthorized action")
     def delete(self, review_id):
-        """Delete a review"""
+        """Delete a review (owner or admin only)"""
         current_user_id = get_jwt_identity()
+        claims = get_jwt()
+        is_admin = claims.get("is_admin", False)
+
         review = facade.get_review(review_id)
         if not review:
             ns.abort(404, "Review not found")
 
-        # [TASK 3] Ownership check before delete
-        if review.user_id != current_user_id:
+        if not is_admin and review.user_id != current_user_id:
             ns.abort(403, "Unauthorized action")
 
         deleted = facade.delete_review(review_id)
