@@ -10,6 +10,20 @@ class User(BaseModel):
     password = db.Column(db.String(128), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
 
+     # --- Relationships for Task 8 ---
+    places  = db.relationship(
+        'Place',
+        back_populates='owner',
+        cascade='all, delete-orphan',
+        lazy='dynamic'
+    )
+    reviews = db.relationship(
+        'Review',
+        back_populates='user',
+        cascade='all, delete-orphan',
+        lazy='dynamic'
+    )
+
     def hash_password(self, password):
         """Hashes and sets the user's password"""
         self.password = bcrypt.generate_password_hash(password).decode('utf-8')
