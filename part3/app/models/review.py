@@ -20,6 +20,16 @@ class Review(BaseModel):
     _user_id  = db.Column(db.String(36), db.ForeignKey('users.id'),  nullable=False)
     _place_id = db.Column(db.String(36), db.ForeignKey('places.id'), nullable=False)
 
+    # --- Relationships for Task 8 ---
+    user  = db.relationship(
+        'User',
+        back_populates='reviews'
+    )
+    place = db.relationship(
+        'Place',
+        back_populates='reviews'
+    )
+
     def __init__(self, text, user, place, rating=None, id=None, created_at=None, updated_at=None):
         super().__init__(id=id, created_at=created_at, updated_at=updated_at)
 
