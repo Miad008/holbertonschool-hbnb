@@ -1,6 +1,7 @@
 from app.models.base import BaseModel
 from app import db
 from sqlalchemy.ext.hybrid import hybrid_property
+from app.models.place import place_amenity
 
 class Amenity(BaseModel):
     """
@@ -13,6 +14,14 @@ class Amenity(BaseModel):
     __tablename__ = 'amenities'
 
     _name = db.Column(db.String(50), nullable=False, unique=True)
+
+    # --- Relationship for Task 8 ---
+    places = db.relationship(
+        'Place',
+        secondary=place_amenity,
+        back_populates='amenities',
+        lazy='dynamic'
+    )
 
     def __init__(self, name, id=None, created_at=None, updated_at=None):
         super().__init__(id=id, created_at=created_at, updated_at=updated_at)
