@@ -2,6 +2,13 @@ from app.models.base import BaseModel
 from app import db
 import uuid
 
+# Association table for many-to-many Place ↔ Amenity
+place_amenity = db.Table(
+    'place_amenity',
+    db.Column('place_id',   db.String(36), db.ForeignKey('places.id'),   primary_key=True),
+    db.Column('amenity_id', db.String(36), db.ForeignKey('amenities.id'), primary_key=True)
+)
+
 class Place(BaseModel):
     """
     Represents a place listed by a user.
@@ -24,6 +31,26 @@ class Place(BaseModel):
     _price       = db.Column(db.Float,    nullable=False)
     _latitude    = db.Column(db.Float,    nullable=False)
     _longitude   = db.Column(db.Float,    nullable=False)
+     _owner_id    = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
+
+# --- Relationships for Task 8 ---
+    owner     = db.relationship(
+        'User',
+        back_populates='places'
+    )
+    reviews   = db.relationship(
+        'Review',
+        back_populates='place',
+        cascade='all, delete-orphan',
+        lazy='dynamic'
+    )
+    amenities = db.relationship(
+        'Amenity',
+        secondary=place_amenity,
+        back_populates='places',
+        lazy='dynamic'
+    )
+
 
     def __init__(self, title, description, price, latitude, longitude, owner,
                  amenities=None, reviews=None, id=None, created_at=None, updated_at=None):
