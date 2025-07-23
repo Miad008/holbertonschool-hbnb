@@ -1,32 +1,164 @@
-/* 
-  This is a SAMPLE File to get you started. Follow the instructions on the project to complete the tasks. 
-  You'll probably need to override some of theese styles.
-*/
-
+/* === Reset & Base === */
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
 }
 
 body {
-    background-color: #f4f4f4;
-    color: #333;
+  background-color: #f9f9f9;
+  color: #333;
+  line-height: 1.6;
+  padding: 20px;
 }
 
+/* === Header / Nav === */
 header {
-    background-color: #333;
-    color: #fff;
-    padding: 1rem;
+  background-color: #333;
+  padding: 10px 20px;
 }
 
 nav a {
-    color: #fff;
-    text-decoration: none;
-    margin-left: 1rem;
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
 }
 
-main {
-    padding: 2rem;
+nav a:hover {
+  text-decoration: underline;
+}
+
+/* === Form Style (Login / Add Review) === */
+form {
+  max-width: 600px;
+  margin: 20px auto;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+form h2 {
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button {
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+/* === Places List === */
+#places-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.place-card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 15px;
+  width: 250px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.place-card h3 {
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.place-card p {
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.details-button {
+  background-color: #28a745;
+  border: none;
+  padding: 8px;
+  width: 100%;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.details-button:hover {
+  background-color: #218838;
+}
+
+/* === Place Details === */
+.place-info {
+  background-color: #fff;
+  padding: 20px;
+  margin: 20px auto;
+  border-radius: 6px;
+  max-width: 800px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.place-info p {
+  margin: 10px 0;
+}
+
+/* === Reviews Section === */
+#reviews {
+  max-width: 800px;
+  margin: 20px auto;
+}
+
+.review-card {
+  background-color: #f1f1f1;
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  border-left: 4px solid #007bff;
+  border-radius: 4px;
+}
+
+.review-card p {
+  margin: 5px 0;
+}
+
+/* === Filter Dropdown === */
+#filter {
+  max-width: 300px;
+  margin: 0 auto 30px;
+  text-align: center;
+}
+
+#price-filter {
+  padding: 8px;
+  width: 100%;
+  margin-top: 5px;
+  border-radius: 4px;
+  border: 1px solid #aaa;
 }
