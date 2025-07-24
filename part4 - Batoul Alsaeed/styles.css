@@ -1,3 +1,17 @@
+:root {
+  --primary-color: #0056b3;
+  --secondary-color: #007bff;
+  --accent-color: #218838;
+  --background-color: #28a745;
+  --text-color: #333;
+  --border-color: #aaa;
+  --color-7: #ccc;
+  --color-8: #ddd;
+  --color-9: #f1f1f1;
+  --primary-color0: #f9f9f9;
+  --primary-color1: #fff;
+}
+
 /* === Reset & Base === */
 * {
   box-sizing: border-box;
@@ -7,20 +21,20 @@
 }
 
 body {
-  background-color: #f9f9f9;
-  color: #333;
+  background-color: var(--primary-color0);
+  color: var(--text-color);
   line-height: 1.6;
   padding: 20px;
 }
 
 /* === Header / Nav === */
 header {
-  background-color: #333;
+  background-color: var(--text-color);
   padding: 10px 20px;
 }
 
 nav a {
-  color: #fff;
+  color: var(--primary-color1);
   text-decoration: none;
   font-weight: bold;
 }
@@ -33,7 +47,7 @@ nav a:hover {
 form {
   max-width: 600px;
   margin: 20px auto;
-  background-color: #fff;
+  background-color: var(--primary-color1);
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -56,13 +70,13 @@ select {
   width: 100%;
   padding: 10px;
   margin-bottom: 15px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-7);
   border-radius: 4px;
 }
 
 button {
-  background-color: #007bff;
-  color: #fff;
+  background-color: var(--secondary-color);
+  color: var(--primary-color1);
   padding: 10px 16px;
   border: none;
   border-radius: 4px;
@@ -71,7 +85,7 @@ button {
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: var(--primary-color);
 }
 
 /* === Places List === */
@@ -84,8 +98,8 @@ button:hover {
 }
 
 .place-card {
-  background-color: #fff;
-  border: 1px solid #ddd;
+  background-color: var(--primary-color1);
+  border: 1px solid var(--color-8);
   border-radius: 6px;
   padding: 15px;
   width: 250px;
@@ -103,7 +117,7 @@ button:hover {
 }
 
 .details-button {
-  background-color: #28a745;
+  background-color: var(--background-color);
   border: none;
   padding: 8px;
   width: 100%;
@@ -113,12 +127,12 @@ button:hover {
 }
 
 .details-button:hover {
-  background-color: #218838;
+  background-color: var(--accent-color);
 }
 
 /* === Place Details === */
 .place-info {
-  background-color: #fff;
+  background-color: var(--primary-color1);
   padding: 20px;
   margin: 20px auto;
   border-radius: 6px;
@@ -137,10 +151,10 @@ button:hover {
 }
 
 .review-card {
-  background-color: #f1f1f1;
+  background-color: var(--color-9);
   padding: 10px 15px;
   margin-bottom: 10px;
-  border-left: 4px solid #007bff;
+  border-left: 4px solid var(--secondary-color);
   border-radius: 4px;
 }
 
@@ -160,5 +174,5 @@ button:hover {
   width: 100%;
   margin-top: 5px;
   border-radius: 4px;
-  border: 1px solid #aaa;
+  border: 1px solid var(--border-color);
 }
