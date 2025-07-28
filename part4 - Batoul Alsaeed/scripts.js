@@ -8,26 +8,31 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       const email = loginForm.email.value;
       const password = loginForm.password.value;
+
       try {
-        const response = await fetch("http://127.0.0.1:5000/api/v1/login", {
+        const response = await fetch("http://127.0.0.1:5000/api/v1/auth/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, password }),
         });
+
         const data = await response.json();
-        if (data.access_token) {
+
+        if (response.ok && data.access_token) {
           document.cookie = `token=${data.access_token}; path=/`;
           window.location.href = "index.html";
         } else {
-          alert("Login failed");
+          alert(data.error || "Login failed");
         }
+
       } catch (error) {
         console.error(error);
         alert("An error occurred during login");
       }
+
     });
   }
-
+});
   else if (page.includes("index.html")) {
     const token = getCookie("token");
     const loginLink = document.getElementById("login-link");
