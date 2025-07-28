@@ -1,5 +1,5 @@
 from app import create_app
-from app.api.v1.users import ns as users_namespace
+from app.api.v1.users import ns as users_namespace, admin_ns as admin_users_namespace
 from app.api.v1.auth import auth as auth_namespace  # Task 2: JWT login namespace
 from flask_restx import Api
 
