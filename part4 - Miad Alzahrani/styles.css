@@ -1,1 +1,126 @@
+/* === Base Reset === */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
 
+/* === Body & Layout === */
+body {
+  background-color: #f5f5f5;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* === Header === */
+header {
+  background-color: #ff7f50;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  height: 40px;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  margin-left: 15px;
+  font-weight: bold;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+/* === Main === */
+main {
+  padding: 20px;
+}
+
+/* === Form === */
+form {
+  max-width: 500px;
+  margin: 30px auto;
+  background-color: white;
+  padding: 20px;
+  border-radius: 6px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+}
+
+form label {
+  margin-bottom: 8px;
+  display: block;
+  font-weight: bold;
+}
+
+form textarea,
+form input,
+form select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+form button {
+  background-color: #ff7f50;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+form button:hover {
+  background-color: #e5673d;
+}
+
+/* === Places === */
+.place-card {
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 20px;
+  box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.05);
+}
+
+.details-button {
+  background-color: #4682b4;
+  color: white;
+  border: none;
+  padding: 8px;
+  border-radius: 4px;
+  text-decoration: none;
+  display: inline-block;
+  margin-top: 10px;
+}
+
+.details-button:hover {
+  background-color: #376c97;
+}
+
+/* === Reviews === */
+.review-card {
+  background-color: #fafafa;
+  border: 1px solid #ddd;
+  padding: 12px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+/* === Footer === */
+footer {
+  text-align: center;
+  padding: 15px;
+  background-color: #eee;
+  margin-top: 40px;
+  font-size: 14px;
+  color: #555;
+}
